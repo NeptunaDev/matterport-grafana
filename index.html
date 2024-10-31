@@ -1,47 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matterport</title>
-</head>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
-  iframe {
-    border: none;
-    height: 100vh;
-    width: 100vw;
-  }
-</style>
-<body>
-  <iframe id="showcase" src="/bundle/showcase.html?m=dKEznYeDyaM&applicationKey=9dgydths42wyhyangsu855bca" frameborder=”0” allowfullscreen allow="vr"'></iframe>
-</body>
+<html>
+  <head>
+    <script>
+      (async function () {
+        const { connect } = await import(
+          "https://static.matterport.com/showcase-sdk/bootstrap/3.0.0-0-g0517b8d76c/sdk.es6.js"
+        );
+        window.MP_SDK = { connect };
+      })();
+    </script>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+   
+  </style>
+  <body>
+    <div>
+      <iframe
+        width="853"
+        height="480"
+        src="https://my.matterport.com/show?m=dKEznYeDyaM&play=1&applicationKey=9dgydths42wyhyangsu855bca"
+        frameborder="0"
+        allow="fullscreen *"
+        id="showcase-iframe"
+      ></iframe>
+      <iframe src="http://localhost:3000/d-solo/be2jlu2kbftvkf/prueba?kiosk=&from=1727801212767&to=1730393212767&timezone=browser&refresh=auto&orgId=1&panelId=3&__feature.dashboardSceneSolo" width="450" height="200" frameborder="0"></iframe>
+      <iframe
+        src="http://localhost:3000/public-dashboards/442ce6b8229f4356bc02bb7d99387157"
+        width="450"
+        height="200"
+        frameborder="0"
+      ></iframe>
+    </div>
+
+    <script>
+      (async function connectSdk() {
+        // Espera hasta que el SDK esté disponible en window.MP_SDK
+        while (!window.MP_SDK || !window.MP_SDK.connect) {
+          await new Promise((resolve) => setTimeout(resolve, 50));
+        }
+
+        const iframe = document.getElementById("showcase-iframe");
+
+        // Conecta el SDK; logea un error si hay problemas
+        try {
+          const mpSdk = await window.MP_SDK.connect(iframe);
+          onShowcaseConnect(mpSdk);
+        } catch (e) {
+          console.error(e);
+        }
+      })();
+
+      async function onShowcaseConnect(mpSdk) {
+        try {
+          const modelData = await mpSdk.Model.getData();
+          console.log("Model sid:" + modelData.sid);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    </script>
+  </body>
 </html>
-
-<script>
-const showcase = document.getElementById('showcase');
-const showcaseWindow = showcase.contentWindow;
-showcase.addEventListener('load', async function() {
-  let mpSdk;
-  try {
-    mpSdk = await showcaseWindow.MP_SDK.connect(showcaseWindow);
-  }
-  catch(e) {
-    console.error(e);
-    return;
-  }
-
-  const run = async () => {
-    const data = await mpSdk.Model.getData();
-    console.log("🚀 ~ run ~ data:", data)
-    const details = await mpSdk.Model.getDetails();
-    console.log("🚀 ~ run ~ details:", details) 
-  }
-
-  run()
-});
-</script>
