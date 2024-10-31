@@ -1,0 +1,25 @@
+<iframe id="showcase" width="740" height="480" src="/bundle/showcase.html?m=JGPnGQ6hosj&applicationKey=9dgydths42wyhyangsu855bca" frameborder=”0” allowfullscreen allow="vr"'></iframe>
+
+<script>
+const showcase = document.getElementById('showcase');
+const showcaseWindow = showcase.contentWindow;
+showcase.addEventListener('load', async function() {
+  let mpSdk;
+  try {
+    mpSdk = await showcaseWindow.MP_SDK.connect(showcaseWindow);
+  }
+  catch(e) {
+    console.error(e);
+    return;
+  }
+
+  const run = async () => {
+    const data = await mpSdk.Model.getData();
+    console.log("🚀 ~ run ~ data:", data)
+    const details = await mpSdk.Model.getDetails();
+    console.log("🚀 ~ run ~ details:", details) 
+  }
+
+  run()
+});
+</script>
