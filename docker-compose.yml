@@ -1,20 +1,45 @@
-
 services:
   grafana:
-    build: .  # Utiliza el Dockerfile en el directorio actual
+    build: ./grafana
     container_name: grafana
     restart: unless-stopped
     environment:
       - TERM=linux
-      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-polystat-panel
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-polystat-panel,grafana-mongodb-datasource
     ports:
       - '3000:3000'
     volumes:
       - 'grafana_storage:/var/lib/grafana'
+    depends_on:
+        - mongo
+  
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo_data:/data/db'
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: example
+    ports:
+      - '8081:8081'
+    depends_on:
+      - mongo
     
 volumes:
   grafana_storage: {}
-# networks:
-#   default:
-#     external:
-#       name: ibox-network
+  mongo_data: {}

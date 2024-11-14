@@ -42,6 +42,7 @@
           "http://localhost:3000/d-solo/be3r1zulym03kc/conexion?from=1731418412044&to=1731440012044&timezone=browser&orgId=1&panelId=1&__feature.dashboardSceneSolo";
         console.log("Recargando iframe");
       }, 10000);
+      
       (async function connectSdk() {
         // Espera hasta que el SDK esté disponible en window.MP_SDK
         while (!window.MP_SDK || !window.MP_SDK.connect) {
