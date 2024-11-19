@@ -27,8 +27,7 @@
         id="showcase-iframe"
       ></iframe>
       <iframe
-        id="iframe-grafica"
-        src="http://localhost:3000/d-solo/be3r1zulym03kc/conexion?from=1731418925757&to=1731440525757&timezone=browser&showCategory=Panel%20options&refresh=auto&orgId=1&panelId=1&__feature.dashboardSceneSolo"
+        src="http://localhost:3000/d-solo/fe3o4dmw6ygw0d/new-dashboard?from=1731421342708&to=1731442942708&timezone=browser&orgId=1&panelId=1&__feature.dashboardSceneSolo"
         width="450"
         height="200"
         frameborder="0"
@@ -42,7 +41,7 @@
           "http://localhost:3000/d-solo/be3r1zulym03kc/conexion?from=1731418412044&to=1731440012044&timezone=browser&orgId=1&panelId=1&__feature.dashboardSceneSolo";
         console.log("Recargando iframe");
       }, 10000);
-      
+
       (async function connectSdk() {
         // Espera hasta que el SDK esté disponible en window.MP_SDK
         while (!window.MP_SDK || !window.MP_SDK.connect) {
@@ -70,7 +69,6 @@
           });
           const data = await res.json();
           console.log(data.covalue);
-          
 
           mpSdkOrm.Mattertag.editBillboard(mattertagIdOrm, {
             label: "CO Value",
