@@ -26,10 +26,22 @@
         allow="fullscreen *"
         id="showcase-iframe"
       ></iframe>
-      <iframe src="http://localhost:3000/d-solo/ee3cqxis9dam8d/prove?from=1731334160505&to=1731355760505&timezone=browser&orgId=1&panelId=4&__feature.dashboardSceneSolo" width="450" height="200" frameborder="0"></iframe>
+      <iframe
+        id="iframe-grafica"
+        src="http://localhost:3000/d-solo/be3r1zulym03kc/conexion?from=1731418925757&to=1731440525757&timezone=browser&showCategory=Panel%20options&refresh=auto&orgId=1&panelId=1&__feature.dashboardSceneSolo"
+        width="450"
+        height="200"
+        frameborder="0"
+      ></iframe>
     </div>
 
     <script>
+      setInterval(() => {
+        // Regarcarg el iframe
+        document.getElementById("iframe-grafica").src =
+          "http://localhost:3000/d-solo/be3r1zulym03kc/conexion?from=1731418412044&to=1731440012044&timezone=browser&orgId=1&panelId=1&__feature.dashboardSceneSolo";
+        console.log("Recargando iframe");
+      }, 10000);
       (async function connectSdk() {
         // Espera hasta que el SDK esté disponible en window.MP_SDK
         while (!window.MP_SDK || !window.MP_SDK.connect) {
@@ -47,10 +59,49 @@
         }
       })();
 
+      function showData(mattertagIdOrm, mpSdkOrm) {
+        setInterval(async () => {
+          const res = await fetch("http://localhost:3032/", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await res.json();
+          console.log(data.covalue);
+          
+
+          mpSdkOrm.Mattertag.editBillboard(mattertagIdOrm, {
+            label: "CO Value",
+            description: data.covalue.toString(),
+          });
+          console.log("Actualizando valor");
+        }, 1000);
+      }
+
       async function onShowcaseConnect(mpSdk) {
         try {
           const modelData = await mpSdk.Model.getData();
           console.log("Model sid:" + modelData.sid);
+
+          const res = await fetch("http://localhost:3032/", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await res.json();
+
+          var mattertagDesc = {
+            label: "CO Value",
+            description: data.covalue.toString(),
+            anchorPosition: { x: -2.5, y: 2, z: 3 },
+            stemVector: { x: 0, y: 0, z: 0 },
+          };
+
+          mpSdk.Mattertag.add(mattertagDesc).then(function (mattertagId) {
+            showData(mattertagId[0], mpSdk);
+          });
         } catch (e) {
           console.error(e);
         }
