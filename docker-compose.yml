@@ -1,4 +1,15 @@
 services:
+  # api:
+  #   build: ./api
+  #   container_name: api
+  #   restart: unless-stopped
+  #   ports:
+  #     - '5000:5000'
+  #   volumes:
+  #     - './api:/app'
+  #   depends_on:
+  #     - mongo
+
   grafana:
     build: ./grafana
     container_name: grafana
