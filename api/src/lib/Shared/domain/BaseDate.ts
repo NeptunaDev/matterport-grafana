@@ -7,6 +7,10 @@ export class BaseDate {
   }
 
   private ensureIsValidDate() {
+    if (this.value === null) {
+      return;
+    }
+
     if (isNaN(this.value.getTime())) {
       throw new Error(`Invalid Date: ${this.value.toString()}`);
     }

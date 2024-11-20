@@ -1,6 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { PlantRepository } from '../../domain/PlantRepository';
-import { MongoPlant } from './MongoPlantSchema';
+import { MongoPlant, PlantDocument } from './MongoPlantSchema';
 import { Model } from 'mongoose';
 import { isBaseCreate } from 'src/lib/Shared/domain/RepositoryDtos';
 import { Plant } from '../../domain/Plant';
@@ -10,12 +10,26 @@ import {
   PlantEdit,
   PlantFilters,
 } from '../../domain/PlantInterfaces';
+import { PlantName } from '../../domain/PlantName';
+import { PlantMatterportSid } from '../../domain/PlantMatterportSid';
+import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
 
 export class MongoPlantRepository implements PlantRepository {
   constructor(
     @InjectModel(MongoPlant.name)
     private readonly plantModel: Model<MongoPlant>,
   ) {}
+
+  private toDomain(plant: PlantDocument): Plant {
+    return new Plant(
+      new PlantId(plant.id),
+      new PlantMatterportSid(plant.matterportSid),
+      new PlantName(plant.name),
+      new BaseDate(plant.createdAt),
+      new BaseDate(plant.updatedAt),
+      new BaseDate(plant?.deletedAt ?? null),
+    );
+  }
 
   async save(entity: PlantEdit | PlantCreate): Promise<void> {
     if (isBaseCreate(entity)) {
@@ -31,8 +45,8 @@ export class MongoPlantRepository implements PlantRepository {
     await this.plantModel.updateOne(
       { _id: id },
       {
-        ...(matterportSid && { matterportSid }),
-        ...(name && { name }),
+        ...(matterportSid && { matterportSid: matterportSid.value }),
+        ...(name && { name: name.value }),
       },
     );
   }
@@ -40,18 +54,23 @@ export class MongoPlantRepository implements PlantRepository {
   async find(filters: PlantFilters): Promise<Plant[]> {
     const { id, matterportSid, name, createdAt, updatedAt, deletedAt } =
       filters;
-    return this.plantModel.find({
-      deletedAt: deletedAt.value ?? { $exists: false },
+    const plants = await this.plantModel.find({
+      deletedAt: deletedAt?.value ?? { $exists: false },
       ...(id && { _id: id.value }),
       ...(matterportSid && { matterportSid: matterportSid.value }),
       ...(name && { name: name.value }),
       ...(createdAt && { createdAt: createdAt.value }),
       ...(updatedAt && { updatedAt: updatedAt.value }),
     });
+
+    return plants.map(this.toDomain);
   }
 
   async findById(id: PlantId): Promise<Plant> {
-    return this.plantModel.findById(id, { deletedAt: { $exists: false } });
+    return this.plantModel.findOne({
+      _id: id.value,
+      deletedAt: { $exists: false },
+    });
   }
 
   async remove(id: PlantId): Promise<void> {

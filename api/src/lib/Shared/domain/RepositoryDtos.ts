@@ -8,7 +8,12 @@ export type BaseFilters<
 
 export type BaseCreate<ID extends BaseId, T extends BaseClass<ID>> = Omit<
   T,
-  'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'deletedAt'
+  | 'mapToPrimitives'
+  | 'mapToPrimitivesWithoutDeletedAt'
 >;
 
 export type BaseEdit<ID extends BaseId, T extends BaseClass<ID>> = Partial<
