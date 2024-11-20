@@ -1,16 +1,16 @@
-import { MatterportSid } from './PlantMatterportSid';
+import { PlantMatterportSid } from './PlantMatterportSid';
 import { PlantName } from './PlantName';
 import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
 import { BaseClass } from 'src/lib/Shared/domain/BaseClass';
 import { PlantId } from './PlantId';
 
 export class Plant extends BaseClass<PlantId> {
-  matterportSid: MatterportSid;
+  matterportSid: PlantMatterportSid;
   name: PlantName;
 
   constructor(
     id: PlantId,
-    matterportSid: MatterportSid,
+    matterportSid: PlantMatterportSid,
     name: PlantName,
     createdAt: BaseDate,
     updatedAt: BaseDate,

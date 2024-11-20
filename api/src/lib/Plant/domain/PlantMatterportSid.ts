@@ -1,4 +1,4 @@
-export class MatterportSid {
+export class PlantMatterportSid {
   value: string;
 
   constructor(value: string) {
