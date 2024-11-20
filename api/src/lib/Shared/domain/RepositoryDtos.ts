@@ -14,3 +14,9 @@ export type BaseCreate<ID extends BaseId, T extends BaseClass<ID>> = Omit<
 export type BaseEdit<ID extends BaseId, T extends BaseClass<ID>> = Partial<
   BaseCreate<ID, T>
 > & { id: ID };
+
+export function isBaseCreate<ID extends BaseId, T extends BaseClass<ID>>(
+  entity: BaseCreate<ID, T> | BaseEdit<ID, T>,
+): entity is BaseCreate<ID, T> {
+  return !(entity as BaseEdit<ID, T>).id; // If it doesn't have an `id`, it's a BaseCreate
+}
