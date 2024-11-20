@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -15,6 +16,8 @@ import { PlantRemove } from '../../application/PlantRemove/PlantRemove';
 import { PlantSave } from '../../application/PlantSave/PlantSave';
 import { PlantNotFoundError } from '../../domain/PlantNotFoundError';
 import { CreateBody, EditBody, FindOneParams, FindParams } from './Validations';
+import { MissingFieldError } from 'src/lib/Shared/domain/MissingFieldError';
+import { PlantMatterportSidExisting } from '../../domain/PlantMatterportSidExisting';
 
 @Controller('plant')
 export class PlantController {
@@ -28,6 +31,12 @@ export class PlantController {
     if (error instanceof PlantNotFoundError) {
       console.log(error.stack);
       throw new NotFoundException(error.message);
+    } else if (error instanceof MissingFieldError) {
+      console.log(error.stack);
+      throw new BadRequestException(error.message);
+    } else if (error instanceof PlantMatterportSidExisting) {
+      console.log(error.stack);
+      throw new BadRequestException(error.message);
     } else {
       console.log(error.message);
       throw error;
@@ -37,16 +46,14 @@ export class PlantController {
   @Get()
   async find(@Query() query: FindParams) {
     try {
-      const { id, matterportSid, name, createdAt, updatedAt, deletedAt } =
-        query;
       return (
         await this.plantFind.run(
-          id,
-          matterportSid,
-          name,
-          createdAt,
-          updatedAt,
-          deletedAt,
+          query.id,
+          query.matterportSid,
+          query.name,
+          query.createdAt,
+          query.updatedAt,
+          query.deletedAt,
         )
       ).map((plant) => plant.mapToPrimitivesWithoutDeletedAt());
     } catch (error) {

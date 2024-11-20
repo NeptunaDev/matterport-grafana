@@ -6,9 +6,9 @@ export type PlantDocument = HydratedDocument<MongoPlant> & {
   updatedAt: Date;
 };
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, collection: 'plants' })
 export class MongoPlant {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   matterportSid: string;
 
   @Prop({ required: true })

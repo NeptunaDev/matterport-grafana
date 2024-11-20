@@ -3,7 +3,6 @@ import { PlantId } from '../../domain/PlantId';
 import { PlantMatterportSid } from '../../domain/PlantMatterportSid';
 import { PlantName } from '../../domain/PlantName';
 import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
-import { PlantNotFoundError } from '../../domain/PlantNotFoundError';
 import { Plant } from '../../domain/Plant';
 import { PlantFilters } from '../../domain/PlantInterfaces';
 
@@ -29,8 +28,6 @@ export class PlantFind {
       ...(deletedAt && { deletedAt: new BaseDate(deletedAt) }),
     };
     const users = await this.repository.find(filters);
-
-    if (!users || users.length <= 0) throw new PlantNotFoundError();
 
     return users;
   }
