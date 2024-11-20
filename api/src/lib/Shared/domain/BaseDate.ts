@@ -6,7 +6,7 @@ export class BaseDate {
     this.ensureIsValidDate();
   }
 
-  private ensureIsValidDate(referenceDate?: Date) {
+  private ensureIsValidDate() {
     if (isNaN(this.value.getTime())) {
       throw new Error(`Invalid Date: ${this.value.toString()}`);
     }
@@ -14,12 +14,6 @@ export class BaseDate {
     const currentData = new Date();
     if (this.value > currentData) {
       throw new Error(`Date cannot be in the future: ${this.value}`);
-    }
-
-    if (referenceDate && this.value < referenceDate) {
-      throw new Error(
-        `Date cannot be before the reference date: ${this.value}`,
-      );
     }
   }
 }
