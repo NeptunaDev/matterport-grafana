@@ -11,7 +11,7 @@ export class SensorType extends BaseClass<SensorTypeId> {
     type: SensorTypeType,
     createdAt: BaseDate,
     updatedAt: BaseDate,
-    deletedAt: BaseDate,
+    deletedAt: BaseDate | null,
   ) {
     super(id, createdAt, updatedAt, deletedAt);
     this.type = type;
