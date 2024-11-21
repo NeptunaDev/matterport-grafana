@@ -8,6 +8,8 @@ import { SensorDescription } from './SensorDescription';
 import { SensorColor } from './SensorColor';
 import { SensorId } from './SensorId';
 import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
+import { SensorType } from 'src/lib/SensorType/domain/SensorType';
+import { Device } from 'src/lib/Device/domain/Device';
 
 export class Sensor extends BaseClass<SensorId> {
   idType: SensorTypeId;
@@ -17,6 +19,8 @@ export class Sensor extends BaseClass<SensorId> {
   title: SensorTitle;
   description: SensorDescription;
   color: SensorColor;
+  sensorType?: SensorType;
+  device?: Device;
 
   constructor(
     id: SensorId,
@@ -30,6 +34,8 @@ export class Sensor extends BaseClass<SensorId> {
     createdAt: BaseDate,
     updatedAt: BaseDate,
     deletedAt: BaseDate | null,
+    sensorType?: SensorType,
+    device?: Device,
   ) {
     super(id, createdAt, updatedAt, deletedAt);
     this.idType = idType;
@@ -39,5 +45,7 @@ export class Sensor extends BaseClass<SensorId> {
     this.title = title;
     this.description = description;
     this.color = color;
+    if (sensorType) this.sensorType = sensorType;
+    if (device) this.device = device;
   }
 }
