@@ -38,17 +38,19 @@ const MatterportViewer: React.FC<Props> = ({ modelId, applicationKey }) => {
         console.log('Model sid:', modelData.sid);
 
         // Fetch initial data and create Mattertag
-        const response = await fetch('http://localhost:3032/');
-        const data = await response.json();
+        // const response = await fetch('http://localhost:3032/');
+        // const data = await response.json();
 
         const mattertagDesc: MattertagDescriptor = {
           label: 'CO Value',
-          description: data.covalue.toString(),
+          description: Math.random().toString(),
           anchorPosition: { x: -2.5, y: 2, z: 3 },
-          stemVector: { x: 0, y: 0, z: 0 },
+          stemVector: { x: 1, y: 1, z: 1 },
         };
 
-        const [tagId] = await sdk.Mattertag.add(mattertagDesc);
+        const [tagId] = await sdk.Mattertag.add(mattertagDesc)
+        console.log(tagId);
+        
         setMattertagId(tagId);
       } catch (err) {
         console.error('Failed to initialize Mattertag:', err);
@@ -64,15 +66,13 @@ const MatterportViewer: React.FC<Props> = ({ modelId, applicationKey }) => {
 
     const updateMattertagData = async () => {
       try {
-        const response = await fetch('http://localhost:3032/');
-        const data = await response.json();
+        // const response = await fetch('http://localhost:3032/');
+        // const data = await response.json();
         
         await sdk.Mattertag.editBillboard(mattertagId, {
           label: 'CO Value',
-          description: data.covalue.toString(),
+          description: Math.random().toString(),
         });
-        
-        console.log('Updated CO value:', data.covalue);
       } catch (err) {
         console.error('Failed to update Mattertag:', err);
       }
