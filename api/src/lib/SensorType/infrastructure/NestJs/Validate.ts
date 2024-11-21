@@ -1,12 +1,12 @@
 import { IsOptional, IsString } from 'class-validator';
-import { BaseFindParams } from 'src/lib/Shared/infrastrucure/NestJS/Validation';
+import { BaseFindQueries } from 'src/lib/Shared/infrastrucure/NestJS/Validation';
 
 export class FindOneParams {
   @IsString()
   id: string;
 }
 
-export class FindParams extends BaseFindParams {
+export class FindQueries extends BaseFindQueries {
   @IsString()
   @IsOptional()
   type: string;

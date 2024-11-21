@@ -16,6 +16,9 @@ import { MongoDeviceRepository } from 'src/lib/Device/infrastructure/Mongo/Mongo
 import { SensorFind } from '../../application/SensorFind/SensorFind';
 import { SensorSave } from '../../application/SensorSave/SensorSave';
 import { SensorRemove } from '../../application/SensorRemove/SensorRemove';
+import { SensorRepository } from '../../domain/SensorRepository';
+import { SensorTypeRepository } from 'src/lib/SensorType/domain/SensorTypeRepository';
+import { DeviceRepository } from 'src/lib/Device/domain/DeviceRepository';
 
 @Module({
   imports: [
@@ -32,16 +35,15 @@ import { SensorRemove } from '../../application/SensorRemove/SensorRemove';
     { provide: 'MongoDeviceRepository', useClass: MongoDeviceRepository },
     {
       provide: 'SensorFind',
-      useFactory: (repository: MongoSensorRepository) =>
-        new SensorFind(repository),
+      useFactory: (repository: SensorRepository) => new SensorFind(repository),
       inject: ['SensorRepository'],
     },
     {
       provide: 'SensorSave',
       useFactory: (
-        repository: MongoSensorRepository,
-        sensorTypeRepository: MongoSensorTypeRepository,
-        deviceRepository: MongoDeviceRepository,
+        repository: SensorRepository,
+        sensorTypeRepository: SensorTypeRepository,
+        deviceRepository: DeviceRepository,
       ) => new SensorSave(repository, sensorTypeRepository, deviceRepository),
       inject: [
         'SensorRepository',
@@ -51,7 +53,7 @@ import { SensorRemove } from '../../application/SensorRemove/SensorRemove';
     },
     {
       provide: 'SensorRemove',
-      useFactory: (repository: MongoSensorRepository) =>
+      useFactory: (repository: SensorRepository) =>
         new SensorRemove(repository),
       inject: ['SensorRepository'],
     },

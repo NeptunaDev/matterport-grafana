@@ -15,7 +15,12 @@ import { PlantFind } from '../../application/PlantFind/PlantFind';
 import { PlantRemove } from '../../application/PlantRemove/PlantRemove';
 import { PlantSave } from '../../application/PlantSave/PlantSave';
 import { PlantNotFoundError } from '../../domain/PlantNotFoundError';
-import { CreateBody, EditBody, FindOneParams, FindParams } from './Validations';
+import {
+  CreateBody,
+  EditBody,
+  FindOneParams,
+  FindQueries,
+} from './Validations';
 import { MissingFieldError } from 'src/lib/Shared/domain/MissingFieldError';
 import { PlantMatterportSidExisting } from '../../domain/PlantMatterportSidExisting';
 
@@ -44,7 +49,7 @@ export class PlantController {
   }
 
   @Get()
-  async find(@Query() query: FindParams) {
+  async find(@Query() query: FindQueries) {
     try {
       return (
         await this.plantFind.run(

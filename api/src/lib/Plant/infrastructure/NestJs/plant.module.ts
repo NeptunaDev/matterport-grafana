@@ -6,6 +6,7 @@ import { MongoPlantRepository } from '../Mongo/MongoPlantRepository';
 import { PlantFind } from '../../application/PlantFind/PlantFind';
 import { PlantRemove } from '../../application/PlantRemove/PlantRemove';
 import { PlantSave } from '../../application/PlantSave/PlantSave';
+import { PlantRepository } from '../../domain/PlantRepository';
 
 @Module({
   imports: [
@@ -19,20 +20,18 @@ import { PlantSave } from '../../application/PlantSave/PlantSave';
     },
     {
       provide: 'PlantFind',
-      useFactory: (respository: MongoPlantRepository) =>
-        new PlantFind(respository),
+      useFactory: (respository: PlantRepository) => new PlantFind(respository),
       inject: ['PlantRepository'],
     },
     {
       provide: 'PlantRemove',
-      useFactory: (respository: MongoPlantRepository) =>
+      useFactory: (respository: PlantRepository) =>
         new PlantRemove(respository),
       inject: ['PlantRepository'],
     },
     {
       provide: 'PlantSave',
-      useFactory: (respository: MongoPlantRepository) =>
-        new PlantSave(respository),
+      useFactory: (respository: PlantRepository) => new PlantSave(respository),
       inject: ['PlantRepository'],
     },
   ],

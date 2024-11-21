@@ -9,14 +9,14 @@ import {
   IsString,
 } from 'class-validator';
 import { Coordinates } from 'src/lib/Shared/domain/Coordinates';
-import { BaseFindParams } from 'src/lib/Shared/infrastrucure/NestJS/Validation';
+import { BaseFindQueries } from 'src/lib/Shared/infrastrucure/NestJS/Validation';
 
 export class FindOneParams {
   @IsString()
   id: string;
 }
 
-export class FindQueries extends BaseFindParams {
+export class FindQueries extends BaseFindQueries {
   @IsString()
   @IsOptional()
   idType?: string;
