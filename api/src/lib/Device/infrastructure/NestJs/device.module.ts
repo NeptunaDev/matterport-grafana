@@ -21,14 +21,8 @@ import {
   ],
   controllers: [DeviceController],
   providers: [
-    {
-      provide: 'DeviceRepository',
-      useClass: MongoDeviceRepository,
-    },
-    {
-      provide: 'PlantRepository',
-      useClass: MongoPlantRepository,
-    },
+    { provide: 'DeviceRepository', useClass: MongoDeviceRepository },
+    { provide: 'PlantRepository', useClass: MongoPlantRepository },
     {
       provide: 'DeviceFind',
       useFactory: (repository: MongoDeviceRepository) =>

@@ -25,6 +25,7 @@ export class DeviceFind {
     createdAt?: Date,
     updatedAt?: Date,
     deletedAt?: Date | null,
+    populateIdPlant?: boolean,
   ): Promise<Device[]> {
     const filters: DeviceFilters = {
       ...(id && { id: new DeviceId(id) }),
@@ -39,6 +40,6 @@ export class DeviceFind {
       ...(deletedAt && { deletedAt: new BaseDate(createdAt) }),
     };
 
-    return this.repository.find(filters);
+    return this.repository.find(filters, populateIdPlant);
   }
 }
