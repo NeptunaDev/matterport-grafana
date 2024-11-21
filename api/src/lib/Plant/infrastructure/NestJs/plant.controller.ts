@@ -85,8 +85,7 @@ export class PlantController {
   @Delete(':id')
   async remove(@Param() params: FindOneParams) {
     try {
-      const { id } = params;
-      return await this.plantRemove.run(id);
+      return await this.plantRemove.run(params.id);
     } catch (error) {
       throw this.managmentError(error);
     }

@@ -8,6 +8,6 @@ export class PlantRemove {
   async run(id: string): Promise<void> {
     const plant = await this.repository.findById(new PlantId(id));
     if (!plant) throw new PlantNotFoundError(id);
-    return this.repository.remove(plant.id);
+    return this.repository.remove(new PlantId(id));
   }
 }

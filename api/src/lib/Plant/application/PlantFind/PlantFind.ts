@@ -27,8 +27,6 @@ export class PlantFind {
       ...(updatedAt && { updatedAt: new BaseDate(updatedAt) }),
       ...(deletedAt && { deletedAt: new BaseDate(deletedAt) }),
     };
-    const users = await this.repository.find(filters);
-
-    return users;
+    return this.repository.find(filters);
   }
 }

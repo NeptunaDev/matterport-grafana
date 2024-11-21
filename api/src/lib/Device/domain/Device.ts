@@ -7,6 +7,7 @@ import { DevicePlace } from './DevicePlace';
 import { DeviceCondition } from './DeviceCondition';
 import { PlantId } from 'src/lib/Plant/domain/PlantId';
 import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
+import { Plant } from 'src/lib/Plant/domain/Plant';
 
 export class Device extends BaseClass<DeviceId> {
   idPlant: PlantId;
@@ -15,6 +16,7 @@ export class Device extends BaseClass<DeviceId> {
   tag: DeviceTag;
   place: DevicePlace;
   condition: DeviceCondition;
+  plant?: Plant;
 
   constructor(
     id: DeviceId,
@@ -27,6 +29,7 @@ export class Device extends BaseClass<DeviceId> {
     createdAt: BaseDate,
     updatedAt: BaseDate,
     deletedAt: BaseDate | null,
+    plant?: Plant,
   ) {
     super(id, createdAt, updatedAt, deletedAt);
     this.idPlant = idPlant;
@@ -35,5 +38,8 @@ export class Device extends BaseClass<DeviceId> {
     this.tag = tag;
     this.place = place;
     this.condition = condition;
+    if (plant) {
+      this.plant = plant;
+    }
   }
 }

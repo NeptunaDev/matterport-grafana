@@ -25,7 +25,7 @@ export class BaseClass<T extends BaseId> {
       throw new Error('updatedAt cannot be less than createdAt');
     }
 
-    if (this.deletedAt.value && this.deletedAt.value < this.updatedAt.value) {
+    if (this.deletedAt?.value && this.deletedAt.value < this.updatedAt.value) {
       throw new Error('deletedAt cannot be less than updatedAt');
     }
   }
@@ -33,7 +33,11 @@ export class BaseClass<T extends BaseId> {
   public mapToPrimitives() {
     const primitives = {};
     Object.keys(this).forEach((key) => {
-      primitives[key] = this[key].value;
+      primitives[key] = this[key]?.value
+        ? this[key].value
+        : this[key]?.mapToPrimitives
+          ? this[key].mapToPrimitives()
+          : null;
     });
     return primitives;
   }
@@ -42,7 +46,11 @@ export class BaseClass<T extends BaseId> {
     const primitives = {};
     Object.keys(this).forEach((key) => {
       if (key !== 'deletedAt') {
-        primitives[key] = this[key].value;
+        primitives[key] = this[key]?.value
+          ? this[key].value
+          : this[key]?.mapToPrimitivesWithoutDeletedAt
+            ? this[key].mapToPrimitivesWithoutDeletedAt()
+            : null;
       }
     });
     return primitives;

@@ -14,7 +14,7 @@ export class MongoPlant {
   @Prop({ required: true })
   name: string;
 
-  @Prop()
+  @Prop({ default: null })
   deletedAt: Date;
 }
 

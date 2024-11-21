@@ -43,7 +43,7 @@ export class MongoPlantRepository implements PlantRepository {
     const { id, matterportSid, name } = entity as PlantEdit;
 
     await this.plantModel.updateOne(
-      { _id: id },
+      { _id: id.value },
       {
         ...(matterportSid && { matterportSid: matterportSid.value }),
         ...(name && { name: name.value }),
@@ -75,12 +75,8 @@ export class MongoPlantRepository implements PlantRepository {
 
   async remove(id: PlantId): Promise<void> {
     await this.plantModel.updateOne(
-      {
-        _id: id,
-      },
-      {
-        deletedAt: new Date(),
-      },
+      { _id: id.value },
+      { deletedAt: new Date() },
     );
   }
 }
