@@ -38,8 +38,6 @@ export class Device extends BaseClass<DeviceId> {
     this.tag = tag;
     this.place = place;
     this.condition = condition;
-    if (plant) {
-      this.plant = plant;
-    }
+    if (plant) this.plant = plant;
   }
 }

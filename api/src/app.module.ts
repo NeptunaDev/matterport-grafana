@@ -4,6 +4,7 @@ import { PlantModule } from './lib/Plant/infrastructure/NestJs/plant.module';
 import { DeviceModule } from './lib/Device/infrastructure/NestJs/device.module';
 import { SensorTypeModule } from './lib/SensorType/infrastructure/NestJs/sensor-type.module';
 import { ConfigModule } from '@nestjs/config';
+import { SensorModule } from './lib/Sensor/infrastructure/NestJs/sensor.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     PlantModule,
     DeviceModule,
     SensorTypeModule,
+    SensorModule,
   ],
   controllers: [],
   providers: [],
