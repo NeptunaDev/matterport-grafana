@@ -1,15 +1,12 @@
-import { IsDate, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
+import { BaseFindParams } from 'src/lib/Shared/infrastrucure/NestJS/Validation';
 
 export class FindOneParams {
   @IsString()
   id: string;
 }
 
-export class FindParams {
-  @IsString()
-  @IsOptional()
-  id: string;
-
+export class FindParams extends BaseFindParams {
   @IsString()
   @IsOptional()
   matterportSid: string;
@@ -17,18 +14,6 @@ export class FindParams {
   @IsString()
   @IsOptional()
   name: string;
-
-  @IsDate()
-  @IsOptional()
-  createdAt: Date;
-
-  @IsDate()
-  @IsOptional()
-  updatedAt: Date;
-
-  @IsDate()
-  @IsOptional()
-  deletedAt: Date;
 }
 
 export class CreateBody {

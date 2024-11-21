@@ -12,7 +12,7 @@ export class BasePlace {
     if (!this.value) {
       throw new Error('Place is required');
     }
-    if (this.value.length !== 2) {
+    if (this.value.length !== 3) {
       throw new Error('Invalid place');
     }
   }

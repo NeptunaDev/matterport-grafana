@@ -20,9 +20,8 @@ export class PlantSave {
 
   async run(id?: string, matterportSid?: string, name?: string): Promise<void> {
     if (!id) {
-      if (!matterportSid)
-        throw new MissingFieldError('MatterportSid is required');
-      if (!name) throw new MissingFieldError('Name is required');
+      if (!matterportSid) throw new MissingFieldError('MatterportSid');
+      if (!name) throw new MissingFieldError('Name');
 
       await this.checkMatterportSid(matterportSid);
 
@@ -39,7 +38,7 @@ export class PlantSave {
       await this.checkMatterportSid(matterportSid);
 
     const dataEdit: PlantEdit = {
-      id: plant.id,
+      id: new PlantId(id),
       ...(matterportSid && {
         matterportSid: new PlantMatterportSid(matterportSid),
       }),
