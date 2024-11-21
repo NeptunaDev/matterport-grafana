@@ -37,8 +37,6 @@ export class MongoSensorRepository implements SensorRepository {
   ) {}
 
   private toDomain(sensor: SensorDocument): Sensor {
-    console.log(sensor);
-
     const devicePopulated = sensor.idDevice as
       | DeviceDocument
       | mongoose.Types.ObjectId;
