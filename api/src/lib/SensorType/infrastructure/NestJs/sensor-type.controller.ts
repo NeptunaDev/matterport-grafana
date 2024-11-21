@@ -16,7 +16,7 @@ import { SensorTypeSave } from '../../application/SensorTypeSave/SensorTypeSave'
 import { SensorTypeRemove } from '../../application/SensorTypeRemove/SensorTypeRemove';
 import { SensorTypeNotFoundError } from '../../domain/SensorTypeNotFoundError';
 import { MissingFieldError } from 'src/lib/Shared/domain/MissingFieldError';
-import { CreateBody, EditBody, FindOneParams, FindParams } from './Validate';
+import { CreateBody, EditBody, FindOneParams, FindQueries } from './Validate';
 
 @Controller('sensor-type')
 export class SensorTypeController {
@@ -41,7 +41,7 @@ export class SensorTypeController {
   }
 
   @Get()
-  async find(@Query() query: FindParams) {
+  async find(@Query() query: FindQueries) {
     try {
       return (
         await this.sensorTypeFind.run(

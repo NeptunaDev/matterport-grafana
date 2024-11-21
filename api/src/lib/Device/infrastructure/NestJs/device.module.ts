@@ -11,6 +11,8 @@ import {
   MongoPlant,
   PlantSchema,
 } from 'src/lib/Plant/infrastructure/Mongo/MongoPlantSchema';
+import { DeviceRepository } from '../../domain/DeviceRepository';
+import { PlantRepository } from 'src/lib/Plant/domain/PlantRepository';
 
 @Module({
   imports: [
@@ -25,21 +27,20 @@ import {
     { provide: 'PlantRepository', useClass: MongoPlantRepository },
     {
       provide: 'DeviceFind',
-      useFactory: (repository: MongoDeviceRepository) =>
-        new DeviceFind(repository),
+      useFactory: (repository: DeviceRepository) => new DeviceFind(repository),
       inject: ['DeviceRepository'],
     },
     {
       provide: 'DeviceSave',
       useFactory: (
-        repository: MongoDeviceRepository,
-        deviceRepository: MongoPlantRepository,
+        repository: DeviceRepository,
+        deviceRepository: PlantRepository,
       ) => new DeviceSave(repository, deviceRepository),
       inject: ['DeviceRepository', 'PlantRepository'],
     },
     {
       provide: 'DeviceRemove',
-      useFactory: (repository: MongoDeviceRepository) =>
+      useFactory: (repository: DeviceRepository) =>
         new DeviceRemove(repository),
       inject: ['DeviceRepository'],
     },

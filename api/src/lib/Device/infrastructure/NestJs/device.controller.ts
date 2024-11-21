@@ -17,7 +17,7 @@ import { DeviceRemove } from '../../application/DeviceRemove/DeviceRemove';
 import { PlantNotFoundError } from 'src/lib/Plant/domain/PlantNotFoundError';
 import { MissingFieldError } from 'src/lib/Shared/domain/MissingFieldError';
 import { DeviceNotFoundError } from '../../domain/DeviceNotFoundError';
-import { CreateBody, EditBody, FindOneParams, FindParams } from './Validation';
+import { CreateBody, EditBody, FindOneParams, FindQueries } from './Validation';
 
 @Controller('device')
 export class DeviceController {
@@ -44,7 +44,7 @@ export class DeviceController {
   }
 
   @Get()
-  async find(@Query() query: FindParams) {
+  async find(@Query() query: FindQueries) {
     try {
       return (
         await this.deviceFind.run(

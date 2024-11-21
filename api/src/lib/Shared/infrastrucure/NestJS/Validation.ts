@@ -1,6 +1,6 @@
 import { IsDate, IsOptional, IsString } from 'class-validator';
 
-export class BaseFindParams {
+export class BaseFindQueries {
   @IsString()
   @IsOptional()
   id: string;

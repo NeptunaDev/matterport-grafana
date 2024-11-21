@@ -9,6 +9,7 @@ import { MongoSensorTypeRepository } from '../Mongo/MongoSensorTypeRepository';
 import { SensorTypeFind } from '../../application/SensorTypeFind/SensorTypeFind';
 import { SensorTypeSave } from '../../application/SensorTypeSave/SensorTypeSave';
 import { SensorTypeRemove } from '../../application/SensorTypeRemove/SensorTypeRemove';
+import { SensorTypeRepository } from '../../domain/SensorTypeRepository';
 
 @Module({
   imports: [
@@ -21,19 +22,19 @@ import { SensorTypeRemove } from '../../application/SensorTypeRemove/SensorTypeR
     { provide: 'SensorTypeRepository', useClass: MongoSensorTypeRepository },
     {
       provide: 'SensorTypeFind',
-      useFactory: (repository: MongoSensorTypeRepository) =>
+      useFactory: (repository: SensorTypeRepository) =>
         new SensorTypeFind(repository),
       inject: ['SensorTypeRepository'],
     },
     {
       provide: 'SensorTypeSave',
-      useFactory: (repository: MongoSensorTypeRepository) =>
+      useFactory: (repository: SensorTypeRepository) =>
         new SensorTypeSave(repository),
       inject: ['SensorTypeRepository'],
     },
     {
       provide: 'SensorTypeRemove',
-      useFactory: (repository: MongoSensorTypeRepository) =>
+      useFactory: (repository: SensorTypeRepository) =>
         new SensorTypeRemove(repository),
       inject: ['SensorTypeRepository'],
     },
