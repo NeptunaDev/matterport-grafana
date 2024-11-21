@@ -89,7 +89,10 @@ export class MongoDeviceRepository implements DeviceRepository {
     );
   }
 
-  async find(filters: Partial<Device>): Promise<any> {
+  async find(
+    filters: Partial<Device>,
+    populateIdPlant?: boolean,
+  ): Promise<Device[]> {
     const {
       id,
       condition,
@@ -103,20 +106,25 @@ export class MongoDeviceRepository implements DeviceRepository {
       updatedAt,
     } = filters;
 
-    const devices = await this.model
-      .find({
-        deletedAt: deletedAt?.value ?? { $eq: null },
-        ...(id && { _id: id.value }),
-        ...(condition && { condition: condition.value }),
-        ...(createdAt && { createdAt: createdAt.value }),
-        ...(description && { description: description.value }),
-        ...(idPlant && { idPlant: idPlant.value }),
-        ...(name && { name: name.value }),
-        ...(place && { place: place.value }),
-        ...(tag && { tag: tag.value }),
-        ...(updatedAt && { updatedAt: updatedAt.value }),
-      })
-      .populate('idPlant');
+    const query = this.model.find({
+      deletedAt: deletedAt?.value ?? { $eq: null },
+      ...(id && { _id: id.value }),
+      ...(condition && { condition: condition.value }),
+      ...(createdAt && { createdAt: createdAt.value }),
+      ...(description && { description: description.value }),
+      ...(idPlant && { idPlant: idPlant.value }),
+      ...(name && { name: name.value }),
+      ...(place && { place: place.value }),
+      ...(tag && { tag: tag.value }),
+      ...(updatedAt && { updatedAt: updatedAt.value }),
+    });
+
+    if (populateIdPlant) {
+      query.populate('idPlant');
+    }
+
+    const devices = await query.exec();
+
     return devices.map(this.toDomain);
   }
 

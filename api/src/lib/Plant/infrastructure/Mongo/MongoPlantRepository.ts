@@ -55,7 +55,7 @@ export class MongoPlantRepository implements PlantRepository {
     const { id, matterportSid, name, createdAt, updatedAt, deletedAt } =
       filters;
     const plants = await this.plantModel.find({
-      deletedAt: deletedAt?.value ?? { $exists: false },
+      deletedAt: deletedAt?.value ?? { $eq: null },
       ...(id && { _id: id.value }),
       ...(matterportSid && { matterportSid: matterportSid.value }),
       ...(name && { name: name.value }),
@@ -69,7 +69,7 @@ export class MongoPlantRepository implements PlantRepository {
   async findById(id: PlantId): Promise<Plant> {
     return this.plantModel.findOne({
       _id: id.value,
-      deletedAt: { $exists: false },
+      deletedAt: { $eq: null },
     });
   }
 

@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -40,8 +41,14 @@ export class FindParams extends BaseFindParams {
   place: Coordinates;
 
   @IsBoolean()
+  @Transform(({ value }) => value === 'true')
   @IsOptional()
   condition: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => value === 'true')
+  populateIdPlant: string;
 }
 
 export class CreateBody {
@@ -64,6 +71,7 @@ export class CreateBody {
   place: Coordinates;
 
   @IsBoolean()
+  @Transform(({ value }) => value === 'true')
   condition: boolean;
 }
 
@@ -92,6 +100,7 @@ export class EditBody {
   place: Coordinates;
 
   @IsBoolean()
+  @Transform(({ value }) => value === 'true')
   @IsOptional()
   condition: boolean;
 }
