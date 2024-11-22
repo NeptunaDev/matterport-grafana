@@ -4,12 +4,11 @@ import { MongoIframeGrafanaDocumet } from './MongoIframeGrafanaSchema';
 import mongoose from 'mongoose';
 import { Plant } from 'src/lib/Plant/domain/Plant';
 import { PlantId } from 'src/lib/Plant/domain/PlantId';
-import { PlantMatterportSid } from 'src/lib/Plant/domain/PlantMatterportSid';
-import { PlantName } from 'src/lib/Plant/domain/PlantName';
 import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
 import { IframeGrafanaId } from '../../domain/IframeGrafanaId';
 import { IframeGrafanaOrder } from '../../domain/IframeGrafanaOrder';
 import { IframeGrafanaUrl } from '../../domain/IframeGrafanaUrl';
+import { MongoPlantService } from 'src/lib/Plant/infrastructure/Mongo/MongoPlantService';
 
 export class MongoIframeGrafanaService {
   static toDomain(iframeGrafana: MongoIframeGrafanaDocumet): IframeGrafana {
@@ -23,14 +22,7 @@ export class MongoIframeGrafanaService {
       plantId = new PlantId(plantPopulate.toString());
     } else {
       plantId = new PlantId(plantPopulate._id.toString());
-      plant = new Plant(
-        new PlantId(plantPopulate._id.toString()),
-        new PlantMatterportSid(plantPopulate.matterportSid),
-        new PlantName(plantPopulate.name),
-        new BaseDate(plantPopulate.createdAt),
-        new BaseDate(plantPopulate.updatedAt),
-        plantPopulate.deletedAt ? new BaseDate(plantPopulate.deletedAt) : null,
-      );
+      plant = MongoPlantService.toDomain(plantPopulate);
     }
 
     return new IframeGrafana({

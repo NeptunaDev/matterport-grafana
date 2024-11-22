@@ -62,6 +62,7 @@ export class IframeGrafanaController {
         order: queries.order,
         updatedAt: queries.updatedAt,
         url: queries.url,
+        populateIdPlant: queries.populateIdPlant === 'true',
       });
       return (await this.iframeGrafanaFind.run(iframeGrafanaFindDto)).map(
         (dataSensor) => dataSensor.mapToPrimitivesWithoutDeletedAt(),

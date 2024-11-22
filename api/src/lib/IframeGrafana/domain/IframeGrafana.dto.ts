@@ -37,6 +37,7 @@ export class IframeGrafanaFindDto {
   readonly createdAt?: Date;
   readonly updatedAt?: Date;
   readonly deletedAt?: Date;
+  readonly populateIdPlant?: boolean;
 
   constructor(data: {
     id?: string;
@@ -46,6 +47,7 @@ export class IframeGrafanaFindDto {
     createdAt?: Date;
     updatedAt?: Date;
     deletedAt?: Date;
+    populateIdPlant?: boolean;
   }) {
     this.id = data.id;
     this.idPlant = data.idPlant;
@@ -54,5 +56,6 @@ export class IframeGrafanaFindDto {
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
     this.deletedAt = data.deletedAt;
+    this.populateIdPlant = data.populateIdPlant;
   }
 }
