@@ -18,6 +18,10 @@ export class FindQueries extends BaseFindQueries {
   @IsNumber()
   @IsOptional()
   order: number;
+
+  @IsString()
+  @IsOptional()
+  populateIdPlant: string;
 }
 
 export class CreateBody {

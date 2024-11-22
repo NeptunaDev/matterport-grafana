@@ -12,3 +12,5 @@ export interface IframeGrafanaCreate
   extends BaseCreate<IframeGrafanaId, IframeGrafana> {}
 export interface IframeGrafanaEdit
   extends BaseEdit<IframeGrafanaId, IframeGrafana> {}
+
+export type IframeGrafanaPopulates = Array<'idPlant'>;
