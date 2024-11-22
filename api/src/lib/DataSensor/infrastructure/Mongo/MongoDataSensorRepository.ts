@@ -104,6 +104,7 @@ export class MongoDataSensorRepository implements DataSensorRepository {
   ): Promise<DataSensor[]> {
     const query = this.model.find({
       deletedAt: filter.deletedAt?.value ?? { $eq: null },
+      ...(filter.id && { _id: filter.id.value }),
       ...(filter.idSensor && { idSensor: filter.idSensor.value }),
       ...(filter.variable && { variable: filter.variable.value }),
       ...(filter.value && { value: filter.value.value }),

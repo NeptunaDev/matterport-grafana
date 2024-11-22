@@ -6,6 +6,7 @@ import { SensorTypeModule } from './lib/SensorType/infrastructure/NestJs/sensor-
 import { ConfigModule } from '@nestjs/config';
 import { SensorModule } from './lib/Sensor/infrastructure/NestJs/sensor.module';
 import { DataSensorModule } from './lib/DataSensor/infrastructure/NestJs/data-sensor.module';
+import { IframeGrafanaModule } from './lib/IframeGrafana/infrastructure/NestJs/iframe-grafana.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DataSensorModule } from './lib/DataSensor/infrastructure/NestJs/data-se
     SensorTypeModule,
     SensorModule,
     DataSensorModule,
+    IframeGrafanaModule,
   ],
   controllers: [],
   providers: [],

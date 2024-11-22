@@ -1,19 +1,18 @@
 import { BaseClass } from './BaseClass';
 import { BaseId } from './BaseId';
 
+export type OmitMethods<T> = {
+  [K in keyof T]: T[K] extends (...args: any[]) => any ? never : K;
+}[keyof T];
+
 export type BaseFilters<
   ID extends BaseId,
   T extends BaseClass<ID>,
 > = Partial<T>;
 
-export type BaseCreate<ID extends BaseId, T extends BaseClass<ID>> = Omit<
+export type BaseCreate<ID extends BaseId, T extends BaseClass<ID>> = Pick<
   T,
-  | 'id'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'deletedAt'
-  | 'mapToPrimitives'
-  | 'mapToPrimitivesWithoutDeletedAt'
+  Exclude<OmitMethods<T>, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
 >;
 
 export type BaseEdit<ID extends BaseId, T extends BaseClass<ID>> = Partial<

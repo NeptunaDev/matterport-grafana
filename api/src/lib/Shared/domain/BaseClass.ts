@@ -2,10 +2,10 @@ import { BaseDate } from './BaseDate';
 import { BaseId } from './BaseId';
 
 export class BaseClass<T extends BaseId> {
-  id: T;
-  createdAt: BaseDate;
-  updatedAt: BaseDate;
-  deletedAt: BaseDate | null;
+  readonly id: T;
+  readonly createdAt: BaseDate;
+  readonly updatedAt: BaseDate;
+  readonly deletedAt: BaseDate | null;
 
   constructor(
     id: T,
