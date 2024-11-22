@@ -7,7 +7,10 @@ export class DeviceTag {
   }
 
   private ensureIsValidName() {
-    const isValidName = /^[a-zA-Z0-9 ]{1,30}$/.test(this.value);
+    const isValidName =
+      /^[a-zA-Z0-9 ,.!?&(){}[\]“”'"\\/^$#@;_:+-=<>"|`~]{1,30}$/.test(
+        this.value,
+      );
     if (!isValidName) {
       throw new Error(`Invalid tag: ${this.value}`);
     }
