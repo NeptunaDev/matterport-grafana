@@ -38,7 +38,10 @@ export class MongoIframeGrafanaRepository implements IframeGrafanaRepository {
     );
   }
 
-  async find(filters: Partial<IframeGrafana>): Promise<IframeGrafana[]> {
+  async find(
+    filters: Partial<IframeGrafana>,
+    populates: string[],
+  ): Promise<IframeGrafana[]> {
     const query = this.model.find({
       deletedAt: filters.deletedAt?.value ?? { $eq: null },
       ...(filters.id && { _id: filters.id.value }),
@@ -48,6 +51,10 @@ export class MongoIframeGrafanaRepository implements IframeGrafanaRepository {
       ...(filters.createdAt && { createdAt: filters.createdAt.value }),
       ...(filters.updatedAt && { updatedAt: filters.updatedAt.value }),
     });
+
+    for (const populate of populates) {
+      query.populate(populate);
+    }
 
     const iframeGrafanas = await query.exec();
     return iframeGrafanas.map(MongoIframeGrafanaService.toDomain);

@@ -1,14 +1,17 @@
 services:
-  # api:
-  #   build: ./api
-  #   container_name: api
-  #   restart: unless-stopped
-  #   ports:
-  #     - '5000:5000'
-  #   volumes:
-  #     - './api:/app'
-  #   depends_on:
-  #     - mongo
+  api:
+    build: ./api
+    container_name: api
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
+    # volumes:
+    #   - './api:/app' # Uncomment this line if you are developing the API
+    depends_on:
+      - mongo
+    env_file:
+      - ./api/.env
+      
 
   grafana:
     build: ./grafana
@@ -54,3 +57,4 @@ services:
 volumes:
   grafana_storage: {}
   mongo_data: {}
+
