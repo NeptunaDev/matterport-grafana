@@ -7,7 +7,11 @@ export class BaseName {
   }
 
   private ensureIsValidName() {
-    const isValidName = /^[a-zA-Z0-9 ]{1,50}$/.test(this.value);
+    const isValidName =
+      /^[a-zA-Z0-9 ,.!?&(){}[\]“”'"\\/^$#@;_:+-=<>"|`~]{1,50}$/.test(
+        this.value,
+      );
+
     if (!isValidName) {
       throw new Error(`Invalid name: ${this.value}`);
     }
