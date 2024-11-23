@@ -18,6 +18,7 @@ import { PlantNotFoundError } from 'src/lib/Plant/domain/PlantNotFoundError';
 import { MissingFieldError } from 'src/lib/Shared/domain/MissingFieldError';
 import { DeviceNotFoundError } from '../../domain/DeviceNotFoundError';
 import { CreateBody, EditBody, FindOneParams, FindQueries } from './Validation';
+import { Coordinates } from 'src/lib/Shared/domain/Coordinates';
 
 @Controller('device')
 export class DeviceController {
@@ -53,11 +54,15 @@ export class DeviceController {
           query.name,
           query.description,
           query.tag,
-          query.place,
-          query.condition,
-          new Date(query.createdAt),
-          new Date(query.updatedAt),
-          new Date(query.deletedAt),
+          query.place
+            ?.replace('[', '')
+            .replace(']', '')
+            .split(',')
+            .map((n) => Number(n)) as Coordinates,
+          query.condition && query.condition === 'true',
+          query.createdAt ? new Date(query.createdAt) : null,
+          query.updatedAt ? new Date(query.updatedAt) : null,
+          query.deletedAt ? new Date(query.deletedAt) : null,
           query.populateIdPlant === 'true',
         )
       ).map((device) => device.mapToPrimitivesWithoutDeletedAt());

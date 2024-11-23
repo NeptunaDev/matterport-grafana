@@ -105,7 +105,6 @@ export class MongoDeviceRepository implements DeviceRepository {
       tag,
       updatedAt,
     } = filters;
-
     const query = this.model.find({
       deletedAt: deletedAt?.value ?? { $eq: null },
       ...(id && { _id: id.value }),

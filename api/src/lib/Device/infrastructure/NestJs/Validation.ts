@@ -4,6 +4,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsBoolean,
+  IsBooleanString,
   IsNumber,
   IsOptional,
   IsString,
@@ -36,18 +37,29 @@ export class FindQueries extends BaseFindQueries {
   @IsArray()
   @ArrayMinSize(3)
   @ArrayMaxSize(3)
-  @IsNumber({}, { each: true })
   @IsOptional()
-  place: Coordinates;
+  @Transform(({ value }) =>
+    typeof value === 'string'
+      ? value
+          .replace('[', '')
+          .replace(']', '')
+          .split(',')
+          .map((n) => {
+            if (isNaN(Number(n))) {
+              throw new Error('Invalid number');
+            }
+            return Number(n);
+          })
+      : value,
+  )
+  place: string;
 
-  @IsBoolean()
-  @Transform(({ value }) => value === 'true')
+  @IsBooleanString()
   @IsOptional()
-  condition: boolean;
+  condition: string;
 
-  @IsBoolean()
+  @IsBooleanString()
   @IsOptional()
-  @Transform(({ value }) => value === 'true')
   populateIdPlant: string;
 }
 

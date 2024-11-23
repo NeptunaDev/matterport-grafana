@@ -46,11 +46,12 @@ export class BaseClass<T extends BaseId> {
     const primitives = {};
     Object.keys(this).forEach((key) => {
       if (key !== 'deletedAt') {
-        primitives[key] = this[key]?.value
-          ? this[key].value
-          : this[key]?.mapToPrimitivesWithoutDeletedAt
-            ? this[key].mapToPrimitivesWithoutDeletedAt()
-            : null;
+        primitives[key] =
+          this[key]?.value || typeof this[key].value === 'boolean'
+            ? this[key].value
+            : this[key]?.mapToPrimitivesWithoutDeletedAt
+              ? this[key].mapToPrimitivesWithoutDeletedAt()
+              : null;
       }
     });
     return primitives;
