@@ -47,9 +47,9 @@ export class SensorTypeController {
         await this.sensorTypeFind.run(
           query.id,
           query.type,
-          new Date(query.createdAt),
-          new Date(query.updatedAt),
-          new Date(query.deletedAt),
+          query.createdAt ? new Date(query.createdAt) : null,
+          query.updatedAt ? new Date(query.updatedAt) : null,
+          query.deletedAt ? new Date(query.deletedAt) : null,
         )
       ).map((sensorType) => sensorType.mapToPrimitivesWithoutDeletedAt());
     } catch (error) {
