@@ -55,12 +55,12 @@ export class IframeGrafanaController {
   async find(@Query() queries: FindQueries) {
     try {
       const iframeGrafanaFindDto = new IframeGrafanaFindDto({
-        createdAt: new Date(queries.createdAt),
-        deletedAt: new Date(queries.deletedAt),
+        createdAt: queries.createdAt ? new Date(queries.createdAt) : null,
+        deletedAt: queries.deletedAt ? new Date(queries.deletedAt) : null,
         id: queries.id,
         idPlant: queries.idPlant,
-        order: queries.order,
-        updatedAt: new Date(queries.updatedAt),
+        order: queries.order ? parseInt(queries.order) : null,
+        updatedAt: queries.updatedAt ? new Date(queries.updatedAt) : null,
         url: queries.url,
         populateIdPlant: queries.populateIdPlant === 'true',
       });

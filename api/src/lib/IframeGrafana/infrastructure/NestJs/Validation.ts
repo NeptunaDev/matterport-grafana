@@ -1,4 +1,11 @@
-import { IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsBooleanString,
+  IsNumber,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { BaseFindQueries } from 'src/lib/Shared/infrastrucure/NestJS/Validation';
 
 export class FindOneParams {
@@ -15,11 +22,11 @@ export class FindQueries extends BaseFindQueries {
   @IsOptional()
   url: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
-  order: number;
+  order: string;
 
-  @IsString()
+  @IsBooleanString()
   @IsOptional()
   populateIdPlant: string;
 }

@@ -21,6 +21,9 @@ export class MongoPlantRepository implements PlantRepository {
   ) {}
 
   private toDomain(plant: PlantDocument): Plant {
+    if (!plant) {
+      return null;
+    }
     return new Plant(
       new PlantId(plant.id),
       new PlantMatterportSid(plant.matterportSid),
