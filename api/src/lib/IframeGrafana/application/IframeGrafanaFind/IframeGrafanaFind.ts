@@ -6,11 +6,12 @@ import { IframeGrafanaUrl } from '../../domain/IframeGrafanaUrl';
 import { IframeGrafanaOrder } from '../../domain/IframeGrafanaOrder';
 import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
 import { IframeGrafanaPopulates } from '../../domain/IframeGrafanaInterface';
+import { IframeGrafana } from '../../domain/IframeGrafana';
 
 export class IframeGrafanaFind {
   constructor(private readonly repository: IframeGrafanaRepository) {}
 
-  async run(filters: IframeGrafanaFindDto) {
+  async run(filters: IframeGrafanaFindDto): Promise<IframeGrafana[]> {
     const { populateIdPlant } = filters;
     const populates: IframeGrafanaPopulates = [];
     populateIdPlant && populates.push('idPlant');
