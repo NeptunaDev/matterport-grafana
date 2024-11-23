@@ -74,7 +74,7 @@ export class FindQueries extends BaseFindQueries {
   @IsOptional()
   description?: string;
 
-  @IsString()
+  @IsHexColor()
   @IsOptional()
   color?: string;
 

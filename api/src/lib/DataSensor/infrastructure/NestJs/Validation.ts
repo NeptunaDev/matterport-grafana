@@ -1,5 +1,10 @@
-import { Transform } from 'class-transformer';
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsBooleanString,
+  IsNumber,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { BaseFindQueries } from 'src/lib/Shared/infrastrucure/NestJS/Validation';
 
 export class FindOneParams {
@@ -16,17 +21,16 @@ export class FindQueries extends BaseFindQueries {
   @IsOptional()
   variable: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
-  value: number;
+  value: string;
 
   @IsString()
   @IsOptional()
   unit: string;
 
-  @IsBoolean()
+  @IsBooleanString()
   @IsOptional()
-  @Transform(({ value }) => value === 'true')
   populateidSensor?: string;
 }
 

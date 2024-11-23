@@ -26,6 +26,7 @@ export class BaseClass<T extends BaseId> {
     }
 
     if (this.deletedAt?.value && this.deletedAt.value < this.updatedAt.value) {
+      console.log('deletedAt', this.deletedAt.value, this.id.value);
       throw new Error('deletedAt cannot be less than updatedAt');
     }
   }

@@ -33,18 +33,19 @@ export class MongoDataSensorRepository implements DataSensorRepository {
   ) {}
 
   private toDomain(dataSensor: DataSensorDocument): DataSensor {
+    if (!dataSensor) return null;
     const sensorPopulated = dataSensor.idSensor as
       | SensorDocument
       | mongoose.Types.ObjectId;
 
     let sensorId: SensorId;
     let sensor: Sensor;
+    if (!sensorPopulated) return;
 
     if (sensorPopulated instanceof mongoose.Types.ObjectId) {
       sensorId = new SensorId(sensorPopulated.toString());
     } else {
       sensorId = new SensorId(sensorPopulated._id.toString());
-      console.log(sensorPopulated.idType);
 
       sensor = new Sensor(
         sensorId,
@@ -118,10 +119,11 @@ export class MongoDataSensorRepository implements DataSensorRepository {
   }
 
   async findById(id: DataSensorId): Promise<DataSensor> {
-    return this.model.findOne({
+    const dataSensor = await this.model.findOne({
       _id: id.value,
       deletedAt: { $eq: null },
     });
+    return this.toDomain(dataSensor as DataSensorDocument);
   }
 
   async remove(id: DataSensorId): Promise<void> {
