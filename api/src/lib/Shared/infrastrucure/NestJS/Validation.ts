@@ -1,19 +1,19 @@
-import { IsDate, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class BaseFindQueries {
   @IsString()
   @IsOptional()
   id: string;
 
-  @IsDate()
+  @IsDateString()
   @IsOptional()
-  createdAt: Date;
+  createdAt: string;
 
-  @IsDate()
+  @IsDateString()
   @IsOptional()
-  updatedAt: Date;
+  updatedAt: string;
 
-  @IsDate()
+  @IsDateString()
   @IsOptional()
-  deletedAt: Date;
+  deletedAt: string;
 }

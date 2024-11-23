@@ -55,9 +55,9 @@ export class DeviceController {
           query.tag,
           query.place,
           query.condition,
-          query.createdAt,
-          query.updatedAt,
-          query.deletedAt,
+          new Date(query.createdAt),
+          new Date(query.updatedAt),
+          new Date(query.deletedAt),
           query.populateIdPlant === 'true',
         )
       ).map((device) => device.mapToPrimitivesWithoutDeletedAt());

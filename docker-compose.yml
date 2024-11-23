@@ -5,13 +5,12 @@ services:
     restart: unless-stopped
     ports:
       - '8000:8000'
-    # volumes:
-    #   - './api:/app' # Uncomment this line if you are developing the API
     depends_on:
       - mongo
     env_file:
       - ./api/.env
-      
+    networks:
+      - grafana_network
 
   grafana:
     build: ./grafana
@@ -25,8 +24,10 @@ services:
     volumes:
       - 'grafana_storage:/var/lib/grafana'
     depends_on:
-        - mongo
-  
+      - mongo
+    networks:
+      - grafana_network
+
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -38,6 +39,8 @@ services:
       - '27017:27017'
     volumes:
       - 'mongo_data:/data/db'
+    networks:
+      - grafana_network
 
   mongo-express:
     image: mongo-express:latest
@@ -53,8 +56,12 @@ services:
       - '8081:8081'
     depends_on:
       - mongo
-    
+    networks:
+      - grafana_network
+
 volumes:
   grafana_storage: {}
   mongo_data: {}
 
+networks:
+  grafana_network:

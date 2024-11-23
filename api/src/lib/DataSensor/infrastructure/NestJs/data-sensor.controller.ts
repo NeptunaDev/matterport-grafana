@@ -54,9 +54,9 @@ export class DataSensorController {
           queries.variable,
           queries.value,
           queries.unit,
-          queries.createdAt,
-          queries.updatedAt,
-          queries.deletedAt,
+          new Date(queries.createdAt),
+          new Date(queries.updatedAt),
+          new Date(queries.deletedAt),
           queries.populateidSensor === 'true',
         )
       ).map((dataSensor) => dataSensor.mapToPrimitivesWithoutDeletedAt());
