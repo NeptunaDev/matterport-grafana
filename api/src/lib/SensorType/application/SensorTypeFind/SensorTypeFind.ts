@@ -19,7 +19,7 @@ export class SensorTypeFind {
       ...(type && { type: new SensorTypeType(type) }),
       ...(createdAt && { createdAt: new BaseDate(createdAt) }),
       ...(updatedAt && { updatedAt: new BaseDate(updatedAt) }),
-      ...(deletedAt && { deletedAt: new BaseDate(createdAt) }),
+      ...(deletedAt && { deletedAt: new BaseDate(deletedAt) }),
     };
 
     return this.repository.find(filters);

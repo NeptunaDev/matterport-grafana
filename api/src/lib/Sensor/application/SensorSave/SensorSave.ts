@@ -31,6 +31,7 @@ export class SensorSave {
   }
 
   private async checkDevice(idDevice: string): Promise<void> {
+    console.log('🚀 ~ SensorSave ~ checkDevice ~ idDevice:', idDevice);
     const device = await this.deviceRepository.findById(new DeviceId(idDevice));
     if (!device) throw new DeviceNotFoundError(idDevice);
   }
@@ -69,7 +70,6 @@ export class SensorSave {
 
       return await this.repository.save(dataCreate);
     }
-
     const sensorId = new SensorId(id);
     const sensor = await this.repository.findById(sensorId);
     if (!sensor) throw new SensorNotFoundError(id);
@@ -78,6 +78,9 @@ export class SensorSave {
       await this.checkSensorType(idType);
     if (idDevice && sensor.idDevice.value !== idDevice)
       await this.checkDevice(idDevice);
+
+    console.log('idType', idType);
+    console.log('idDevice', idDevice);
 
     const dataEdit: SensorEdit = {
       id: sensorId,

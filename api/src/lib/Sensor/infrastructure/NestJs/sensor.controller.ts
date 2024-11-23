@@ -19,6 +19,7 @@ import { DeviceNotFoundError } from 'src/lib/Device/domain/DeviceNotFoundError';
 import { SensorTypeNotFoundError } from 'src/lib/SensorType/domain/SensorTypeNotFoundError';
 import { MissingFieldError } from 'src/lib/Shared/domain/MissingFieldError';
 import { CreateBody, EditBody, FindOneParams, FindQueries } from './Validation';
+import { Coordinates } from 'src/lib/Shared/domain/Coordinates';
 
 @Controller('sensor')
 export class SensorController {
@@ -53,18 +54,28 @@ export class SensorController {
           query.id,
           query.idType,
           query.idDevice,
-          query.place,
-          query.vector,
+          query.place
+            ?.replace('[', '')
+            .replace(']', '')
+            .split(',')
+            .map((n) => Number(n)) as Coordinates,
+          query.vector
+            ?.replace('[', '')
+            .replace(']', '')
+            .split(',')
+            .map((n) => Number(n)) as Coordinates,
           query.title,
           query.description,
           query.color,
-          new Date(query.createdAt),
-          new Date(query.updatedAt),
-          new Date(query.deletedAt),
-          query.populateidType === 'true',
-          query.populateidDevice === 'true',
+          query.createdAt ? new Date(query.createdAt) : null,
+          query.updatedAt ? new Date(query.updatedAt) : null,
+          query.deletedAt ? new Date(query.deletedAt) : null,
+          query.populateidType && query.populateidType === 'true',
+          query.populateidDevice && query.populateidDevice === 'true',
         )
-      ).map((sensor) => sensor.mapToPrimitivesWithoutDeletedAt());
+      )
+        .map((sensor) => sensor?.mapToPrimitivesWithoutDeletedAt())
+        .filter((sensor) => sensor !== undefined && sensor !== null);
     } catch (error) {
       throw this.managmentError(error);
     }

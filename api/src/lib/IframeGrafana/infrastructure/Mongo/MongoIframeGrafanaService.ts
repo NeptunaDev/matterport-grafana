@@ -12,6 +12,7 @@ import { MongoPlantService } from 'src/lib/Plant/infrastructure/Mongo/MongoPlant
 
 export class MongoIframeGrafanaService {
   static toDomain(iframeGrafana: MongoIframeGrafanaDocumet): IframeGrafana {
+    if (!iframeGrafana) return null;
     const plantPopulate = iframeGrafana.idPlant as
       | PlantDocument
       | mongoose.Types.ObjectId;

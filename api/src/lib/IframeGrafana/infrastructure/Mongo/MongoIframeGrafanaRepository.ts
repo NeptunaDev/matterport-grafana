@@ -1,6 +1,9 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { IframeGrafanaRepository } from '../../domain/IframeGrafanaRepository';
-import { MongoIframeGrafana } from './MongoIframeGrafanaSchema';
+import {
+  MongoIframeGrafana,
+  MongoIframeGrafanaDocumet,
+} from './MongoIframeGrafanaSchema';
 import { Model } from 'mongoose';
 import { isBaseCreate } from 'src/lib/Shared/domain/RepositoryDtos';
 import {
@@ -61,10 +64,13 @@ export class MongoIframeGrafanaRepository implements IframeGrafanaRepository {
   }
 
   async findById(id: IframeGrafanaId): Promise<IframeGrafana> {
-    return this.model.findOne({
+    const iframeGrafana = await this.model.findOne({
       _id: id.value,
       deletedAt: { $eq: null },
     });
+    return MongoIframeGrafanaService.toDomain(
+      iframeGrafana as MongoIframeGrafanaDocumet,
+    );
   }
 
   async remove(id: IframeGrafanaId): Promise<void> {
