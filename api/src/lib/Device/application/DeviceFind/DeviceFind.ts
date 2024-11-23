@@ -34,10 +34,12 @@ export class DeviceFind {
       ...(description && { description: new DeviceDescription(description) }),
       ...(tag && { tag: new DeviceTag(tag) }),
       ...(place && { place: new DevicePlace(place) }),
-      ...(condition && { condition: new DeviceCondition(condition) }),
+      ...(typeof condition === 'boolean' && {
+        condition: new DeviceCondition(condition),
+      }),
       ...(createdAt && { createdAt: new BaseDate(createdAt) }),
-      ...(updatedAt && { updatedAt: new BaseDate(createdAt) }),
-      ...(deletedAt && { deletedAt: new BaseDate(createdAt) }),
+      ...(updatedAt && { updatedAt: new BaseDate(updatedAt) }),
+      ...(deletedAt && { deletedAt: new BaseDate(deletedAt) }),
     };
 
     return this.repository.find(filters, populateIdPlant);

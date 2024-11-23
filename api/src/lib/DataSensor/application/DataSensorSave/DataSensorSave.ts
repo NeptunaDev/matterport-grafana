@@ -30,7 +30,7 @@ export class DataSensorSave {
     variable?: string,
     value?: number,
     unit?: string,
-  ) {
+  ): Promise<void> {
     if (!id) {
       if (!idSensor) throw new MissingFieldError('idSensor');
       if (!variable) throw new MissingFieldError('variable');

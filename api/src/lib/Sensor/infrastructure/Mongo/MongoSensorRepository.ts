@@ -2,104 +2,20 @@ import { InjectModel } from '@nestjs/mongoose';
 import { SensorRepository } from '../../domain/SensorRepository';
 import { MongoSensor, SensorDocument } from './MongoSensorSchema';
 import { Sensor } from '../../domain/Sensor';
-import { SensorTypeDocuemnt } from 'src/lib/SensorType/infrastructure/Mongo/MongoSensorTypeSchema';
-import mongoose, { Model } from 'mongoose';
-import { SensorType } from 'src/lib/SensorType/domain/SensorType';
-import { SensorTypeId } from 'src/lib/SensorType/domain/SensorTypeId';
-import { SensorTypeType } from 'src/lib/SensorType/domain/SensorTypeType';
-import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
-import { DeviceDocument } from 'src/lib/Device/infrastructure/Mongo/MongoDeviceSchema';
-import { Device } from 'src/lib/Device/domain/Device';
-import { DeviceId } from 'src/lib/Device/domain/DeviceId';
-import { PlantId } from 'src/lib/Plant/domain/PlantId';
-import { DeviceName } from 'src/lib/Device/domain/DeviceName';
-import { DeviceDescription } from 'src/lib/Device/domain/DeviceDescription';
-import { DeviceTag } from 'src/lib/Device/domain/DeviceTag';
-import { DevicePlace } from 'src/lib/Device/domain/DevicePlace';
-import { DeviceCondition } from 'src/lib/Device/domain/DeviceCondition';
-import { Coordinates } from 'src/lib/Shared/domain/Coordinates';
+import { Model } from 'mongoose';
 import { SensorId } from '../../domain/SensorId';
-import { SensorPlace } from '../../domain/SensorPlace';
-import { SensorVector } from '../../domain/SensorVector';
-import { SensorTitle } from '../../domain/SensorTitle';
-import { SensorDescription } from '../../domain/SensorDescription';
-import { SensorColor } from '../../domain/SensorColor';
 import { isBaseCreate } from 'src/lib/Shared/domain/RepositoryDtos';
 import {
   SensorCreate,
   SensorEdit,
   SensorFilter,
 } from '../../domain/SensorInterface';
+import { MongoSensorService } from './MongoSensorService';
 
 export class MongoSensorRepository implements SensorRepository {
   constructor(
     @InjectModel(MongoSensor.name) private readonly model: Model<MongoSensor>,
   ) {}
-
-  private toDomain(sensor: SensorDocument): Sensor {
-    const devicePopulated = sensor.idDevice as
-      | DeviceDocument
-      | mongoose.Types.ObjectId;
-    let deviceId: string;
-    let device: Device;
-
-    if (devicePopulated instanceof mongoose.Types.ObjectId) {
-      deviceId = devicePopulated.toString();
-    } else {
-      deviceId = devicePopulated._id.toString();
-      device = new Device(
-        new DeviceId(deviceId),
-        new PlantId(devicePopulated.idPlant.toString()),
-        new DeviceName(devicePopulated.name),
-        new DeviceDescription(devicePopulated.description),
-        new DeviceTag(devicePopulated.tag),
-        new DevicePlace(devicePopulated.place as Coordinates),
-        new DeviceCondition(devicePopulated.condition),
-        new BaseDate(devicePopulated.createdAt),
-        new BaseDate(devicePopulated.updatedAt),
-        devicePopulated.deletedAt
-          ? new BaseDate(devicePopulated.deletedAt)
-          : null,
-      );
-    }
-
-    const sensorTypePopulated = sensor.idType as
-      | SensorTypeDocuemnt
-      | mongoose.Types.ObjectId;
-    let sensorTypeId: string;
-    let sensorType: SensorType;
-
-    if (sensorTypePopulated instanceof mongoose.Types.ObjectId) {
-      sensorTypeId = sensorTypePopulated.toString();
-    } else {
-      sensorTypeId = sensorTypePopulated._id.toString();
-      sensorType = new SensorType(
-        new SensorTypeId(sensorTypeId),
-        new SensorTypeType(sensorTypePopulated.type),
-        new BaseDate(sensorTypePopulated.createdAt),
-        new BaseDate(sensorTypePopulated.updatedAt),
-        sensorTypePopulated.deletedAt
-          ? new BaseDate(sensorTypePopulated.deletedAt)
-          : null,
-      );
-    }
-
-    return new Sensor(
-      new SensorId(sensor._id.toString()),
-      new SensorTypeId(sensorTypeId),
-      new DeviceId(deviceId),
-      new SensorPlace(sensor.place as Coordinates),
-      new SensorVector(sensor.vector as Coordinates),
-      new SensorTitle(sensor.title),
-      new SensorDescription(sensor.description),
-      new SensorColor(sensor.color),
-      new BaseDate(sensor.createdAt),
-      new BaseDate(sensor.updatedAt),
-      sensor.deletedAt ? new BaseDate(sensor.deletedAt) : null,
-      sensorType,
-      device,
-    );
-  }
 
   async save(entity: SensorCreate | SensorEdit): Promise<void> {
     if (isBaseCreate(entity)) {
@@ -155,14 +71,15 @@ export class MongoSensorRepository implements SensorRepository {
 
     const sensors = await query.exec();
 
-    return sensors.map(this.toDomain);
+    return sensors.map(MongoSensorService.toDomain);
   }
 
   async findById(id: SensorId): Promise<Sensor> {
-    return this.model.findOne({
+    const sensor = await this.model.findOne({
       _id: id.value,
       deletedAt: { $eq: null },
     });
+    return MongoSensorService.toDomain(sensor as SensorDocument);
   }
 
   async remove(id: SensorId): Promise<void> {

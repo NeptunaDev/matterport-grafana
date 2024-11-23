@@ -27,7 +27,9 @@ export class IframeGrafanaSave {
     if (!plant) throw new PlantNotFoundError(plantId);
   }
 
-  async run(data: IframeGrafanaUpdateDto | IframeGrafanaCreateDto) {
+  async run(
+    data: IframeGrafanaUpdateDto | IframeGrafanaCreateDto,
+  ): Promise<void> {
     if (data instanceof IframeGrafanaCreateDto) {
       if (!data.idPlant) throw new MissingFieldError('idPlant');
       if (!data.url) throw new MissingFieldError('url');
