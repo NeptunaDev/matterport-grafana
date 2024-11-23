@@ -42,6 +42,7 @@ export class MongoSensorRepository implements SensorRepository {
       | mongoose.Types.ObjectId;
     let deviceId: string;
     let device: Device;
+    if (!devicePopulated) return;
 
     if (devicePopulated instanceof mongoose.Types.ObjectId) {
       deviceId = devicePopulated.toString();
@@ -68,7 +69,9 @@ export class MongoSensorRepository implements SensorRepository {
       | mongoose.Types.ObjectId;
     let sensorTypeId: string;
     let sensorType: SensorType;
+    if (!sensorTypePopulated) return;
 
+    if (!sensorTypePopulated) return;
     if (sensorTypePopulated instanceof mongoose.Types.ObjectId) {
       sensorTypeId = sensorTypePopulated.toString();
     } else {
@@ -159,10 +162,11 @@ export class MongoSensorRepository implements SensorRepository {
   }
 
   async findById(id: SensorId): Promise<Sensor> {
-    return this.model.findOne({
+    const sensor = await this.model.findOne({
       _id: id.value,
       deletedAt: { $eq: null },
     });
+    return this.toDomain(sensor as SensorDocument);
   }
 
   async remove(id: SensorId): Promise<void> {

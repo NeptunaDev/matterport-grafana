@@ -3,7 +3,8 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
-  IsBoolean,
+  IsBooleanString,
+  IsHexColor,
   IsNumber,
   IsOptional,
   IsString,
@@ -28,16 +29,42 @@ export class FindQueries extends BaseFindQueries {
   @IsArray()
   @ArrayMinSize(3)
   @ArrayMaxSize(3)
-  @IsNumber({}, { each: true })
   @IsOptional()
-  place: Coordinates;
+  @Transform(({ value }) =>
+    typeof value === 'string'
+      ? value
+          .replace('[', '')
+          .replace(']', '')
+          .split(',')
+          .map((n) => {
+            if (isNaN(Number(n))) {
+              throw new Error('Invalid number');
+            }
+            return Number(n);
+          })
+      : value,
+  )
+  place: string;
 
   @IsArray()
   @ArrayMinSize(3)
   @ArrayMaxSize(3)
-  @IsNumber({}, { each: true })
   @IsOptional()
-  vector: Coordinates;
+  @Transform(({ value }) =>
+    typeof value === 'string'
+      ? value
+          .replace('[', '')
+          .replace(']', '')
+          .split(',')
+          .map((n) => {
+            if (isNaN(Number(n))) {
+              throw new Error('Invalid number');
+            }
+            return Number(n);
+          })
+      : value,
+  )
+  vector: string;
 
   @IsString()
   @IsOptional()
@@ -51,14 +78,12 @@ export class FindQueries extends BaseFindQueries {
   @IsOptional()
   color?: string;
 
-  @IsBoolean()
+  @IsBooleanString()
   @IsOptional()
-  @Transform(({ value }) => value === 'true')
   populateidType?: string;
 
-  @IsBoolean()
+  @IsBooleanString()
   @IsOptional()
-  @Transform(({ value }) => value === 'true')
   populateidDevice?: string;
 }
 
@@ -87,7 +112,7 @@ export class CreateBody {
   @IsString()
   description?: string;
 
-  @IsString()
+  @IsHexColor()
   color?: string;
 }
 
@@ -122,7 +147,7 @@ export class EditBody {
   @IsOptional()
   description?: string;
 
-  @IsString()
+  @IsHexColor()
   @IsOptional()
   color?: string;
 }

@@ -83,7 +83,6 @@ export class CreateBody {
   place: Coordinates;
 
   @IsBoolean()
-  @Transform(({ value }) => value === 'true')
   condition: boolean;
 }
 
@@ -112,7 +111,6 @@ export class EditBody {
   place: Coordinates;
 
   @IsBoolean()
-  @Transform(({ value }) => value === 'true')
   @IsOptional()
   condition: boolean;
 }

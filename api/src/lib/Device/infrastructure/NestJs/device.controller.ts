@@ -63,7 +63,7 @@ export class DeviceController {
           query.createdAt ? new Date(query.createdAt) : null,
           query.updatedAt ? new Date(query.updatedAt) : null,
           query.deletedAt ? new Date(query.deletedAt) : null,
-          query.populateIdPlant === 'true',
+          query.populateIdPlant && query.populateIdPlant === 'true',
         )
       ).map((device) => device.mapToPrimitivesWithoutDeletedAt());
     } catch (error) {
