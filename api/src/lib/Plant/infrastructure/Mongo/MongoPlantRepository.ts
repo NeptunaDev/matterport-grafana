@@ -10,29 +10,13 @@ import {
   PlantEdit,
   PlantFilters,
 } from '../../domain/PlantInterfaces';
-import { PlantName } from '../../domain/PlantName';
-import { PlantMatterportSid } from '../../domain/PlantMatterportSid';
-import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
+import { MongoPlantService } from './MongoPlantService';
 
 export class MongoPlantRepository implements PlantRepository {
   constructor(
     @InjectModel(MongoPlant.name)
     private readonly plantModel: Model<MongoPlant>,
   ) {}
-
-  private toDomain(plant: PlantDocument): Plant {
-    if (!plant) {
-      return null;
-    }
-    return new Plant(
-      new PlantId(plant.id),
-      new PlantMatterportSid(plant.matterportSid),
-      new PlantName(plant.name),
-      new BaseDate(plant.createdAt),
-      new BaseDate(plant.updatedAt),
-      new BaseDate(plant?.deletedAt ?? null),
-    );
-  }
 
   async save(entity: PlantEdit | PlantCreate): Promise<void> {
     if (isBaseCreate(entity)) {
@@ -66,7 +50,7 @@ export class MongoPlantRepository implements PlantRepository {
       ...(updatedAt && { updatedAt: updatedAt.value }),
     });
 
-    return plants.map(this.toDomain);
+    return plants.map(MongoPlantService.toDomain);
   }
 
   async findById(id: PlantId): Promise<Plant> {
@@ -74,7 +58,7 @@ export class MongoPlantRepository implements PlantRepository {
       _id: id.value,
       deletedAt: { $eq: null },
     });
-    return this.toDomain(plant as PlantDocument);
+    return MongoPlantService.toDomain(plant as PlantDocument);
   }
 
   async remove(id: PlantId): Promise<void> {

@@ -16,7 +16,7 @@ import { SensorTypeSave } from '../../application/SensorTypeSave/SensorTypeSave'
 import { SensorTypeRemove } from '../../application/SensorTypeRemove/SensorTypeRemove';
 import { SensorTypeNotFoundError } from '../../domain/SensorTypeNotFoundError';
 import { MissingFieldError } from 'src/lib/Shared/domain/MissingFieldError';
-import { CreateBody, EditBody, FindOneParams, FindQueries } from './Validate';
+import { CreateBody, EditBody, FindOneParams, FindQueries } from './Validation';
 
 @Controller('sensor-type')
 export class SensorTypeController {
