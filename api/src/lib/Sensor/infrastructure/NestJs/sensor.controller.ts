@@ -58,9 +58,9 @@ export class SensorController {
           query.title,
           query.description,
           query.color,
-          query.createdAt,
-          query.updatedAt,
-          query.deletedAt,
+          new Date(query.createdAt),
+          new Date(query.updatedAt),
+          new Date(query.deletedAt),
           query.populateidType === 'true',
           query.populateidDevice === 'true',
         )

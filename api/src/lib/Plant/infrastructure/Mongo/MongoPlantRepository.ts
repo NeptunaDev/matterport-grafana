@@ -67,16 +67,16 @@ export class MongoPlantRepository implements PlantRepository {
   }
 
   async findById(id: PlantId): Promise<Plant> {
-    return this.plantModel.findOne({
+    const plant = await this.plantModel.findOne({
       _id: id.value,
       deletedAt: { $eq: null },
     });
+    return this.toDomain(plant as PlantDocument);
   }
 
   async remove(id: PlantId): Promise<void> {
-    await this.plantModel.updateOne(
-      { _id: id.value },
-      { deletedAt: new Date() },
-    );
+    const deletedAt = new Date();
+    deletedAt.setSeconds(deletedAt.getSeconds() + 1);
+    await this.plantModel.updateOne({ _id: id.value }, { deletedAt });
   }
 }

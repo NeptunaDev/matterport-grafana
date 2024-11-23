@@ -56,9 +56,9 @@ export class PlantController {
           query.id,
           query.matterportSid,
           query.name,
-          query.createdAt,
-          query.updatedAt,
-          query.deletedAt,
+          query.createdAt ? new Date(query.createdAt) : null,
+          query.updatedAt ? new Date(query.updatedAt) : null,
+          query.deletedAt ? new Date(query.deletedAt) : null,
         )
       ).map((plant) => plant.mapToPrimitivesWithoutDeletedAt());
     } catch (error) {
