@@ -4,30 +4,19 @@ import { MongoSensorType, SensorTypeDocuemnt } from './MongoSensorTypeSchema';
 import { Model } from 'mongoose';
 import { SensorType } from '../../domain/SensorType';
 import { SensorTypeId } from '../../domain/SensorTypeId';
-import { SensorTypeType } from '../../domain/SensorTypeType';
-import { BaseDate } from 'src/lib/Shared/domain/BaseDate';
 import {
   SensorTypeCreate,
   SensorTypeEdit,
   SensorTypeFilters,
 } from '../../domain/SensorTypeInterfaces';
 import { isBaseCreate } from 'src/lib/Shared/domain/RepositoryDtos';
+import { MongoSensorTypeService } from './MongoSensorTypeService';
 
 export class MongoSensorTypeRepository implements SensorTypeRepository {
   constructor(
     @InjectModel(MongoSensorType.name)
     private readonly model: Model<MongoSensorType>,
   ) {}
-
-  private toDomain(sensorType: SensorTypeDocuemnt): SensorType {
-    return new SensorType(
-      new SensorTypeId(sensorType._id.toString()),
-      new SensorTypeType(sensorType.type),
-      new BaseDate(sensorType.createdAt),
-      new BaseDate(sensorType.updatedAt),
-      sensorType.deletedAt ? new BaseDate(sensorType.deletedAt) : null,
-    );
-  }
 
   async save(entity: SensorTypeEdit | SensorTypeCreate): Promise<void> {
     if (isBaseCreate(entity)) {
@@ -52,14 +41,15 @@ export class MongoSensorTypeRepository implements SensorTypeRepository {
       ...(filters.updatedAt && { updatedAt: filters.updatedAt.value }),
     });
 
-    return sensorTypes.map(this.toDomain);
+    return sensorTypes.map(MongoSensorTypeService.toDomain);
   }
 
   async findById(id: SensorTypeId): Promise<SensorType> {
-    return this.model.findOne({
+    const sensorType = await this.model.findOne({
       _id: id.value,
       deletedAt: { $eq: null },
     });
+    return MongoSensorTypeService.toDomain(sensorType as SensorTypeDocuemnt);
   }
 
   async remove(id: SensorTypeId): Promise<void> {

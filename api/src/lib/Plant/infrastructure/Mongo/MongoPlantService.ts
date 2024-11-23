@@ -7,6 +7,7 @@ import { PlantDocument } from './MongoPlantSchema';
 
 export class MongoPlantService {
   static toDomain(plant: PlantDocument): Plant {
+    if (!plant) null;
     return new Plant(
       new PlantId(plant.id),
       new PlantMatterportSid(plant.matterportSid),
