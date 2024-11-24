@@ -7,7 +7,6 @@ import { Plant } from "./interfaces";
 const Dashboard = () => {
   const { plantName } = useParams<{ plantName: string }>();
   const [currentPlant, setCurrentPlant] = useState<Plant | null>(null);
-  console.log("🚀 ~ Dashboard ~ currentPlant:", currentPlant)
 
   useEffect(() => {
     const fetchPlant = async () => {
