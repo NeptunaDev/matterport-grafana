@@ -1,112 +1,149 @@
-import { useState, useEffect, useRef } from 'react';
-import { Device, MattertagDescriptor, Plant, Sensor } from '../../../interfaces';
-import { SDKInstance } from '../../../../types/matterport';
+import { useState, useEffect, useRef } from "react";
+import {
+  Device,
+  MattertagDescriptor,
+  Plant,
+  Sensor,
+} from "../../../interfaces";
+import { SDKInstance } from "../../../../types/matterport";
 
 export const useMattertag = (sdk: SDKInstance | null) => {
-  const [mattertagId, setMattertagId] = useState<string | null>(null);
+  const [mattertagIds, setMattertagIds] = useState<string[]>([]);
   const intervalRef = useRef<number>();
   const [, setPlants] = useState<Plant[]>([]);
-  const [selectedPlantId, setSelectedPlantId] = useState<string>('');
+  const [selectedPlantId, setSelectedPlantId] = useState<string>("");
   const [, setDevice] = useState<Device[]>([]);
-  const [selectedDeviceId, setSelectedDevicetId] = useState<string>('');
-  const [sensor, setSensor] = useState<Sensor[]>([])
-  console.log("🚀 ~ useMattertag ~ sensor:", sensor)
- 
+  const [selectedDeviceId, setSelectedDevicetId] = useState<string>("");
+  const [sensors, setSensors] = useState<Sensor[]>([]);
+  console.log("🚀 ~ useMattertag ~ sensors:", sensors);
+
   useEffect(() => {
     const fetchPlants = async () => {
       try {
-        const response = await fetch('http://localhost:8000/plant');
+        const response = await fetch("http://localhost:8000/plant");
         const data: Plant[] = await response.json();
         setPlants(data);
-        
+
         if (data.length > 0) {
           setSelectedPlantId(data[0].id);
         }
       } catch (error) {
-        console.error('Error fetching plants:', error);
+        console.error("Error fetching plants:", error);
       }
     };
-    
+
     fetchPlants();
   }, []);
 
- useEffect(() => {
+  useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/device?createAt=${selectedPlantId}`);
+        const response = await fetch(
+          `http://localhost:8000/device?createAt=${selectedPlantId}`
+        );
         const data: Device[] = await response.json();
-        setDevice(data)
+        setDevice(data);
 
         if (data.length > 0) {
           setSelectedDevicetId(data[0].id);
         }
       } catch (error) {
-        console.error('Error fetching plants:', error);
+        console.error("Error fetching devices:", error);
       }
     };
-   
-    fetchDevices();
-   }, [selectedPlantId]);
 
- useEffect(() => {
+    fetchDevices();
+  }, [selectedPlantId]);
+
+  useEffect(() => {
     const fetchSensors = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/sensor?idDevice=${selectedDeviceId}`);
+        const response = await fetch(
+          `http://localhost:8000/sensor?idDevice=${selectedDeviceId}`
+        );
         const data: Sensor[] = await response.json();
-        setSensor(data)
-
-        if (data.length > 0) {
-          setSelectedDevicetId(data[0].id);
-        }
+        setSensors(data);
       } catch (error) {
-        console.error('Error fetching plants:', error);
+        console.error("Error fetching sensors:", error);
       }
     };
-   
+
     fetchSensors();
-   }, [selectedDeviceId]);
+  }, [selectedDeviceId]);
 
   useEffect(() => {
-    const initializeMattertag = async () => {
-      if (!sdk) return;
-
+    const initializeMattertags = async () => {
+      if (!sdk || sensors.length === 0) return;
       try {
-        const modelData = await sdk.Model.getData();
-        console.log("🚀 ~ initializeMattertag ~ modelData:", modelData)
+        // Remove existing Mattertags before creating new ones
+        if (mattertagIds.length > 0) {
+          await sdk.Mattertag.remove(mattertagIds);
+          setMattertagIds([]);
+        }
 
-        const mattertagDesc: MattertagDescriptor = {
-          label: 'CO Value',
-          description: Math.random().toString(),
-          anchorPosition: { x: -2.5, y: 2, z: 3 },
-          stemVector: { x: 1, y: 1, z: 1 },
-        };
+        // Create and add Mattertags one by one
+        const newTagIds = [];
+        for (const sensor of sensors) {
+          const mattertagDescriptor: MattertagDescriptor = {
+            label: sensor.title,
+            description: sensor.description,
+            anchorPosition: {
+              x: sensor.place[0],
+              y: sensor.place[1],
+              z: sensor.place[2],
+            },
+            stemVector: {
+              x: sensor.vector[0],
+              y: sensor.vector[1],
+              z: sensor.vector[2],
+            },
+          };
 
-        const [tagId] = await sdk.Mattertag.add(mattertagDesc);
-        setMattertagId(tagId);
+          const [tagId] = await sdk.Mattertag.add(mattertagDescriptor);
+          newTagIds.push(tagId);
+        }
+
+        console.log("🚀 ~ initializeMattertags ~ newTagIds:", newTagIds);
+        setMattertagIds(newTagIds);
       } catch (err) {
-        console.error('Failed to initialize Mattertag:', err);
+        console.error("Failed to initialize Mattertags:", err);
       }
     };
 
-    initializeMattertag();
-  }, [sdk]);
+    initializeMattertags();
+  }, [sdk, sensors]);
 
   useEffect(() => {
-    if (!sdk || !mattertagId) return;
+    if (!sdk || mattertagIds.length === 0 || sensors.length === 0) return;
 
-    const updateMattertagData = async () => {
+    const updateMattertagsData = async () => {
       try {
-        await sdk.Mattertag.editBillboard(mattertagId, {
-          label: 'CO Value',
-          description: Math.random().toString(),
+        // Only update Mattertags that have corresponding sensor data
+        const updates = mattertagIds.map(async (tagId, index) => {
+          const sensor = sensors[index];
+          if (!sensor) {
+            console.warn(
+              `No sensor data found for Mattertag at index ${index}`
+            );
+            return;
+          }
+
+          await sdk.Mattertag.editBillboard(tagId, {
+            label: sensor.title,
+            description: `${
+              sensor.description
+            }\nLast updated: ${new Date().toLocaleTimeString()}`,
+          });
         });
+
+        await Promise.all(updates);
       } catch (err) {
-        console.error('Failed to update Mattertag:', err);
+        console.error("Failed to update Mattertags:", err);
       }
     };
 
-    updateMattertagData();
-    intervalRef.current = window.setInterval(updateMattertagData, 1000);
+    updateMattertagsData();
+    intervalRef.current = window.setInterval(updateMattertagsData, 1000);
 
     return () => {
       if (intervalRef.current) {
@@ -114,7 +151,7 @@ export const useMattertag = (sdk: SDKInstance | null) => {
         intervalRef.current = undefined;
       }
     };
-  }, [sdk, mattertagId]);
+  }, [sdk, mattertagIds, sensors]);
 
-  return { mattertagId };
+  return { mattertagIds };
 };

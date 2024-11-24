@@ -1,30 +1,30 @@
+// src/App.tsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-
-import  Dashboard  from './dashboard/Dashboard';
-import  Layout  from './dashboard/Layout';
-
-// Import your pages
-
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from './theme/theme';
+import Dashboard from './dashboard/Dashboard';
+import Layout from './dashboard/Layout';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Redirect from root to default plant */}
-        <Route path="/" element={<Navigate to="/plant/plant1" replace />} />
-        
-        {/* Main routes with layout */}
-        <Route path="/plant/:plantName" element={
-          <Layout>
-            <Dashboard />
-          </Layout>
-        } />
-
-
-        {/* Catch all route - redirects to home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/plant/plant1" replace />} />
+          <Route 
+            path="/plant/:plantName" 
+            element={
+              <Layout>
+                <Dashboard />
+              </Layout>
+            } 
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

@@ -39,6 +39,7 @@ export interface Device {
 }
 
 export interface Sensor {
+  value: number;
   id: string;
   createdAt: string;
   updatedAt: string;
