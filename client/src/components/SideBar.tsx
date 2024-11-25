@@ -33,7 +33,7 @@ const Sidebar = () => {
 
   const menuItems: MenuItem[] = [
     {
-      name: "Oe si sa a",
+      name: "Home",
       path: "/home",
       icon: <HomeIcon />,
     },
