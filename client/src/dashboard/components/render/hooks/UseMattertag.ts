@@ -1,33 +1,21 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  Device,
-  MattertagDescriptor,
-  Sensor,
-} from "../../../interfaces";
+import { Device, MattertagDescriptor, Sensor } from "../../../interfaces";
 import { SDKInstance } from "../../../../types/matterport";
-import { usePlantManager } from "../../../../hooks/usePlantManager";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../app/store";
 
 export const useMattertag = (sdk: SDKInstance | null) => {
   const [mattertagIds, setMattertagIds] = useState<string[]>([]);
   const intervalRef = useRef<number>();
-  const [selectedPlantId, setSelectedPlantId] = useState<string>("");
-  console.log("🚀 ~ useMattertag ~ selectedPlantId:", selectedPlantId);
   const [device, setDevice] = useState<Device[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
-  const { selectedPlant } = usePlantManager();
-  console.log("🚀 ~ useMattertag ~ selectedPlant:", selectedPlant)
-
-  useEffect(() => {
-    if (selectedPlant) {
-      setSelectedPlantId(selectedPlant);
-    }
-  }, [selectedPlant]);
+  const { plantSelected } = useSelector((state: RootState) => state.plant);
 
   useEffect(() => {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/device?idPlant=${selectedPlantId}`
+          `/api/device?idPlant=${plantSelected?.id}`
         );
         const data: Device[] = await response.json();
         setDevice(data);
@@ -37,11 +25,11 @@ export const useMattertag = (sdk: SDKInstance | null) => {
     };
 
     fetchDevices();
-  }, [selectedPlantId]);
+  }, [plantSelected]);
 
   const findSensor = async (device: Device) => {
     const response = await fetch(
-      `http://localhost:8000/sensor?idDevice=${device.id}`
+      `/api/sensor?idDevice=${device.id}`
     );
     const data = await response.json();
     setSensors((prev) => {

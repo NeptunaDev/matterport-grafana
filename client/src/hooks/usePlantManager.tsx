@@ -1,35 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setPlant, setPlantSelected } from "../features/counter/plantSlice";
 
 interface Plant {
- id: string;
- name: string;
- matterportSid: string;
- createdAt: string;
- updatedAt: string;
+  id: string;
+  name: string;
+  matterportSid: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const usePlantManager = () => {
- const [plants, setPlants] = useState<Plant[]>([]);
- const [selectedPlant, setSelectedPlant] = useState<string>('');
+  const dispatch = useDispatch();
 
- const fetchPlants = async () => {
-   try {
-     const response = await fetch('http://localhost:8000/plant');
-     const data: Plant[] = await response.json();
-     setPlants(data);
-   } catch (error) {
-     console.error('Error fetching plants:', error);
-   }
- };
-
- useEffect(() => {
-   fetchPlants();
- }, []);
-
- return {
-   plants,
-   selectedPlant,
-   setSelectedPlant,
-   fetchPlants
- };
+  useEffect(() => {
+    const fetchPlants = async () => {
+      try {
+        const response = await fetch("/api/plant");
+        const data: Plant[] = await response.json();
+        dispatch(setPlant(data));
+        dispatch(setPlantSelected(data[0]));
+      } catch (error) {
+        console.error("Error fetching plants:", error);
+      }
+    };
+    fetchPlants();
+  }, [dispatch]);
 };
