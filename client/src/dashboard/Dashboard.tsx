@@ -27,7 +27,14 @@ const MetricCard = styled(Paper)(({ theme }) => ({
   color: theme.palette.common.white,
 }));
 
-const GaugeChart = ({ value, max, label, unit }) => {
+interface GaugeChartProps {
+  value: number;
+  max: number;
+  label: string;
+  unit: string;
+}
+
+const GaugeChart = ({ value, max, label, unit }: GaugeChartProps) => {
   const theme = useTheme();
   const percentage = (value / max) * 100;
 
@@ -123,7 +130,7 @@ const Dashboard = () => {
   }, [plantName, navigate]); // Add navigate to dependencies
 
   // Key prop added to force remount of MatterportViewer
-  const viewerKey = currentPlant?.matterportSid || 'default';
+  const viewerKey = currentPlant?.matterportSid || "default";
 
   return (
     <ThemeProvider theme={darkTheme}>
