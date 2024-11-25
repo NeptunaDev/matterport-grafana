@@ -15,7 +15,7 @@ export const useMattertag = (sdk: SDKInstance | null) => {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/device?idPlant=${plantSelected?.id}`
+          `/api/device?idPlant=${plantSelected?.id}`
         );
         const data: Device[] = await response.json();
         setDevice(data);
@@ -29,7 +29,7 @@ export const useMattertag = (sdk: SDKInstance | null) => {
 
   const findSensor = async (device: Device) => {
     const response = await fetch(
-      `http://localhost:8000/sensor?idDevice=${device.id}`
+      `/api/sensor?idDevice=${device.id}`
     );
     const data = await response.json();
     setSensors((prev) => {

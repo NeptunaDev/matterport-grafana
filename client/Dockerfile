@@ -8,18 +8,22 @@ RUN npm install --production=false
 
 COPY . .
 
-RUN npm run build
+# RUN npm run build
 
-FROM node:20-slim AS runner
+# EXPOSE 5173
 
-WORKDIR /usr/src/app
+CMD ["npm", "run", "dev"]
 
-COPY package*.json ./
-RUN npm install --production
+# FROM node:20-slim AS runner
 
-COPY --from=builder /usr/src/app/dist ./dist
+# WORKDIR /usr/src/app
 
-EXPOSE 5173
+# COPY package*.json ./
+# RUN npm install --production && npm install vite
 
-CMD ["npm", "run", "start:prod"]
+# COPY --from=builder /usr/src/app/dist ./dist
+
+# EXPOSE 4173
+
+# CMD ["npm", "run", "preview"]
 

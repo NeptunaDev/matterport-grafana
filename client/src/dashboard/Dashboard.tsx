@@ -108,7 +108,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchPlant = async () => {
       try {
-        const response = await fetch("http://localhost:8000/plant");
+        const response = await fetch("/api/plant");
         const plants: Plant[] = await response.json();
         const plant = plants.find(
           (p) => p.name.toLowerCase() === plantName?.toLowerCase()

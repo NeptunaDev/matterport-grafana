@@ -16,7 +16,7 @@ export const usePlantManager = () => {
   useEffect(() => {
     const fetchPlants = async () => {
       try {
-        const response = await fetch("http://localhost:8000/plant");
+        const response = await fetch("/api/plant");
         const data: Plant[] = await response.json();
         dispatch(setPlant(data));
         dispatch(setPlantSelected(data[0]));

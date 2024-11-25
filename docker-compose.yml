@@ -1,23 +1,24 @@
 services:
-  # client:
-  #   build: ./client
-  #   container_name: client
-  #   restart: unless-stopped
-  #   port:
-  #     - '3000:5173'
-  #   depends_on:
-  #     - api
-  #   env_file:
-  #     - ./client/.env
-  #   networks:
-  #     - grafana_network
+  client:
+    build: ./client
+    container_name: client
+    restart: unless-stopped
+    ports:
+      # - '80:4173'
+      - '80:5173'
+    depends_on:
+      - api
+    env_file:
+      - ./client/.env
+    networks:
+      - grafana_network
 
   api:
     build: ./api
     container_name: api
     restart: unless-stopped
-    ports:
-      - '8000:8000'
+    # ports:
+    #   - ':8000'
     depends_on:
       - mongo
     env_file:
@@ -32,8 +33,8 @@ services:
     environment:
       - TERM=linux
       - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-polystat-panel,grafana-mongodb-datasource
-    ports:
-      - '3000:3000'
+    # ports:
+    #   - ':3000'
     volumes:
       - 'grafana_storage:/var/lib/grafana'
     depends_on:
