@@ -1,16 +1,5 @@
 import { useState, useEffect } from "react";
-
-interface SDKInstance {
-  connect: () => Promise<void>;
-}
-
-declare global {
-  interface Window {
-    MP_SDK: {
-      connect: (iframe: HTMLIFrameElement) => Promise<SDKInstance>;
-    };
-  }
-}
+import type { SDKInstance } from '../types/matterport';
 
 const useSDKConnection = (iframeId: string) => {
   const [sdk, setSdk] = useState<SDKInstance | null>(null);

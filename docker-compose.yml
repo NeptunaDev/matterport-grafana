@@ -1,4 +1,31 @@
 services:
+  client:
+    build: ./client
+    container_name: client
+    restart: unless-stopped
+    ports:
+      # - '80:4173'
+      - '80:5173'
+    depends_on:
+      - api
+    env_file:
+      - ./client/.env
+    networks:
+      - grafana_network
+
+  api:
+    build: ./api
+    container_name: api
+    restart: unless-stopped
+    # ports:
+    #   - ':8000'
+    depends_on:
+      - mongo
+    env_file:
+      - ./api/.env
+    networks:
+      - grafana_network
+
   grafana:
     build: ./grafana
     container_name: grafana
@@ -11,8 +38,10 @@ services:
     volumes:
       - 'grafana_storage:/var/lib/grafana'
     depends_on:
-        - mongo
-  
+      - mongo
+    networks:
+      - grafana_network
+
   mongo:
     image: mongo:latest
     container_name: mongo
@@ -24,6 +53,8 @@ services:
       - '27017:27017'
     volumes:
       - 'mongo_data:/data/db'
+    networks:
+      - grafana_network
 
   mongo-express:
     image: mongo-express:latest
@@ -39,7 +70,12 @@ services:
       - '8081:8081'
     depends_on:
       - mongo
-    
+    networks:
+      - grafana_network
+
 volumes:
   grafana_storage: {}
   mongo_data: {}
+
+networks:
+  grafana_network:
