@@ -21,7 +21,7 @@ services:
     container_name: api
     restart: unless-stopped
     # ports:
-    #   - ':8000'
+    #   - '8000:8000'
     depends_on:
       - mongo
     env_file:

@@ -65,10 +65,11 @@ const Dashboard = () => {
   const viewerKey = currentPlant?.matterportSid || "default";
 
   useEffect(() => {
+    if (!currentPlant || !currentPlant?.id) return;
     const fetchGrafana = async () => {
       try {
         const response = await fetch(
-          `/api/iframe-grafana?idPlant=673eab124a0d260a63456ad1`
+          `/api/iframe-grafana?idPlant=${currentPlant?.id}`
         );
         const data = await response.json();
 
