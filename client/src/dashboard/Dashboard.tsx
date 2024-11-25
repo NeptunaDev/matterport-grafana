@@ -102,6 +102,8 @@ const darkTheme = createTheme({
 const Dashboard = () => {
   const { plantName } = useParams<{ plantName: string }>();
   const [currentPlant, setCurrentPlant] = useState<Plant | null>(null);
+  const [iframes, setIframes] = useState([]);
+  console.log(iframes);
 
   const navigate = useNavigate();
 
@@ -131,6 +133,25 @@ const Dashboard = () => {
 
   // Key prop added to force remount of MatterportViewer
   const viewerKey = currentPlant?.matterportSid || "default";
+
+  useEffect(() => {
+    const fetchGrafana = async () => {
+      try {
+        console.log(currentPlant?.id);
+        const response = await fetch(
+          `/iframe-grafana?idPlant=${currentPlant?.id}`
+        );
+        console.log("🚀 ~ fetchGrafana ~ response:", response);
+        const data = await response.json();
+        console.log(data);
+
+        setIframes(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchGrafana();
+  }, [currentPlant?.id]);
 
   return (
     <ThemeProvider theme={darkTheme}>
