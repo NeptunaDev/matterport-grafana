@@ -1,4 +1,4 @@
-import { useEffect, useState, ReactElement, useCallback } from 'react';
+import { ReactElement } from 'react';
 import { 
  Drawer, 
  List, 
@@ -15,19 +15,13 @@ import {
  Factory as FactoryIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
-
-interface Plant {
- id: string;
- name: string;
- matterportSid: string;
- createdAt: string;
- updatedAt: string;
-}
+import { usePlantManager } from '../hooks/usePlantManager';
 
 interface MenuItem {
  name: string;
  path: string;
  icon: ReactElement;
+ onClick?: () => void;
 }
 
 const drawerWidth = 240;
@@ -35,44 +29,30 @@ const drawerWidth = 240;
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [plants, setPlants] = useState<MenuItem[]>([]);
-  
-  const fetchPlants = useCallback(async () => {
-    try {
-      const response = await fetch('http://localhost:8000/plant');
-      const data: Plant[] = await response.json();
-      
-      const plantMenuItems: MenuItem[] = data.map(plant => ({
-        name: plant.name.charAt(0).toUpperCase() + plant.name.slice(1),
-        path: `/plant/${plant.name.toLowerCase()}`,
-        icon: <FactoryIcon />
-      }));
-      
-      setPlants(plantMenuItems);
-    } catch (error) {
-      console.error('Error fetching plants:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchPlants();
-  }, [fetchPlants]);
-
-  const handleNavigation = (path: string) => {
-    if (location.pathname !== path) {
-      navigate(path);
-    }
-  };
-
-  const MENU_ITEMS: MenuItem[] = [
+  const { plants, setSelectedPlant } = usePlantManager();
+  console.log("🚀 ~ Sidebar ~ plants:", plants)
+ 
+  const menuItems: MenuItem[] = [
     { 
       name: 'Home',
       path: '/home',
       icon: <HomeIcon />
     },
-    ...plants
+    ...plants.map(plant => ({
+      name: plant.name.charAt(0).toUpperCase() + plant.name.slice(1),
+      path: `/plant/${plant.name.toLowerCase()}`,
+      icon: <FactoryIcon />,
+      onClick: () => setSelectedPlant(plant.id)
+    }))
   ];
-
+ 
+  const handleNavigation = (path: string, onClick?: () => void) => {
+    if (location.pathname !== path) {
+      onClick?.();
+      navigate(path);
+    }
+  };
+ 
   return (
     <Drawer
       variant="permanent"
@@ -88,17 +68,15 @@ const Sidebar = () => {
         },
       }}
     >
-      <Toolbar>
-        "logo"
-      </Toolbar>
+      <Toolbar>"logo"</Toolbar>
       <Divider />
       <Box sx={{ overflow: 'auto', flex: 1 }}>
         <List>
-          {MENU_ITEMS.map((item) => (
+          {menuItems.map((item) => (
             <ListItem key={item.name} disablePadding>
               <ListItemButton
                 selected={location.pathname === item.path}
-                onClick={() => handleNavigation(item.path)}
+                onClick={() => handleNavigation(item.path, item.onClick)}
                 sx={{
                   '&.Mui-selected': {
                     backgroundColor: 'primary.main',
@@ -123,6 +101,6 @@ const Sidebar = () => {
       </Box>
     </Drawer>
   );
-};
+ };
 
 export default Sidebar;
