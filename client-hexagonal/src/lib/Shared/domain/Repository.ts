@@ -1,5 +1,5 @@
 export interface Repository<T> {
-  find(): T[];
-  save(plant: Partial<Omit<T, "createdAt" | "updatedAt">>): void;
-  remove(id: string): void;
+  find(): Promise<T[]>;
+  save(plant: Partial<Omit<T, "createdAt" | "updatedAt">>): Promise<void>;
+  remove(id: string): Promise<void>;
 }

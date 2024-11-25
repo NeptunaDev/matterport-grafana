@@ -1,5 +1,7 @@
+import PlantView from "./sections/Plant/PlantView";
+
 function App() {
-  return <>hola</>;
+  return <PlantView />;
 }
 
 export default App;
