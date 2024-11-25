@@ -2,51 +2,35 @@ import { useState, useEffect, useRef } from "react";
 import {
   Device,
   MattertagDescriptor,
-  Plant,
   Sensor,
 } from "../../../interfaces";
 import { SDKInstance } from "../../../../types/matterport";
+import { usePlantManager } from "../../../../hooks/usePlantManager";
 
 export const useMattertag = (sdk: SDKInstance | null) => {
   const [mattertagIds, setMattertagIds] = useState<string[]>([]);
   const intervalRef = useRef<number>();
-  const [, setPlants] = useState<Plant[]>([]);
   const [selectedPlantId, setSelectedPlantId] = useState<string>("");
-  const [, setDevice] = useState<Device[]>([]);
-  const [selectedDeviceId, setSelectedDevicetId] = useState<string>("");
+  console.log("🚀 ~ useMattertag ~ selectedPlantId:", selectedPlantId);
+  const [device, setDevice] = useState<Device[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
-  console.log("🚀 ~ useMattertag ~ sensors:", sensors);
+  const { selectedPlant } = usePlantManager();
+  console.log("🚀 ~ useMattertag ~ selectedPlant:", selectedPlant)
 
   useEffect(() => {
-    const fetchPlants = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/plant");
-        const data: Plant[] = await response.json();
-        setPlants(data);
-
-        if (data.length > 0) {
-          setSelectedPlantId(data[0].id);
-        }
-      } catch (error) {
-        console.error("Error fetching plants:", error);
-      }
-    };
-
-    fetchPlants();
-  }, []);
+    if (selectedPlant) {
+      setSelectedPlantId(selectedPlant);
+    }
+  }, [selectedPlant]);
 
   useEffect(() => {
     const fetchDevices = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/device?createAt=${selectedPlantId}`
+          `http://localhost:8000/device?idPlant=${selectedPlantId}`
         );
         const data: Device[] = await response.json();
         setDevice(data);
-
-        if (data.length > 0) {
-          setSelectedDevicetId(data[0].id);
-        }
       } catch (error) {
         console.error("Error fetching devices:", error);
       }
@@ -55,33 +39,44 @@ export const useMattertag = (sdk: SDKInstance | null) => {
     fetchDevices();
   }, [selectedPlantId]);
 
+  const findSensor = async (device: Device) => {
+    const response = await fetch(
+      `http://localhost:8000/sensor?idDevice=${device.id}`
+    );
+    const data = await response.json();
+    setSensors((prev) => {
+      const news: Sensor[] = [];
+      data.forEach((da: Sensor) => {
+        const exist = prev.find((se) => se.id === da.id);
+        if (!exist) {
+          news.push(da);
+        }
+      });
+      return [...prev, ...news];
+    });
+  };
+
   useEffect(() => {
+    setSensors([]);
     const fetchSensors = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8000/sensor?idDevice=${selectedDeviceId}`
-        );
-        const data: Sensor[] = await response.json();
-        setSensors(data);
+        device.forEach((devi) => findSensor(devi));
       } catch (error) {
         console.error("Error fetching sensors:", error);
       }
     };
 
     fetchSensors();
-  }, [selectedDeviceId]);
+  }, [device]);
 
   useEffect(() => {
     const initializeMattertags = async () => {
       if (!sdk || sensors.length === 0) return;
       try {
-        // Remove existing Mattertags before creating new ones
         if (mattertagIds.length > 0) {
           await sdk.Mattertag.remove(mattertagIds);
           setMattertagIds([]);
         }
-
-        // Create and add Mattertags one by one
         const newTagIds = [];
         for (const sensor of sensors) {
           const mattertagDescriptor: MattertagDescriptor = {
