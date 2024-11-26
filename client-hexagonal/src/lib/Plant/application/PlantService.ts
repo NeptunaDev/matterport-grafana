@@ -4,20 +4,20 @@ import { Repository } from "../../Shared/domain/Repository";
 import {
   ensurePlantMatterportSidIsValid,
   Plant,
-  PlantCreate,
+  PlantSave,
 } from "../domain/Plant";
 
 export const createPlantService = (repository: Repository<Plant>) => ({
-  find: () => repository.find(),
-  save: (plant: PlantCreate) => {
+  find: async () => await repository.find(),
+  save: async (plant: PlantSave) => {
     if (plant.matterportSid)
       ensurePlantMatterportSidIsValid(plant.matterportSid);
     if (plant.name) ensureBaseNameIsValid(plant.name);
     if (plant.id) ensureBaseIdIsValid(plant.id);
-    repository.save(plant);
+    await repository.save(plant);
   },
-  remove: (id: string) => {
+  remove: async (id: string) => {
     ensureBaseIdIsValid(id);
-    repository.remove(id);
+    await repository.remove(id);
   },
 });

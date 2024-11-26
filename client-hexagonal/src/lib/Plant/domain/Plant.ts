@@ -6,7 +6,7 @@ export interface Plant extends Base {
   readonly name: BaseName;
 }
 
-export type PlantCreate = Partial<Omit<Plant, "createdAt" | "updatedAt">>;
+export type PlantSave = Partial<Omit<Plant, "createdAt" | "updatedAt">>;
 
 export function matterportSidIsValid(matterportSid: string): boolean {
   const sidPattern = /^[a-zA-Z0-9]{1,12}$/;
