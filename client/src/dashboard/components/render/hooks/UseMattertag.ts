@@ -9,6 +9,7 @@ export const useMattertag = (sdk: SDKInstance | null) => {
   const intervalRef = useRef<number>();
   const [device, setDevice] = useState<Device[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
+  console.log("🚀 ~ useMattertag ~ sensors:", sensors)
   const { plantSelected } = useSelector((state: RootState) => state.plant);
 
   useEffect(() => {
@@ -85,8 +86,6 @@ export const useMattertag = (sdk: SDKInstance | null) => {
           const [tagId] = await sdk.Mattertag.add(mattertagDescriptor);
           newTagIds.push(tagId);
         }
-
-        console.log("🚀 ~ initializeMattertags ~ newTagIds:", newTagIds);
         setMattertagIds(newTagIds);
       } catch (err) {
         console.error("Failed to initialize Mattertags:", err);
@@ -101,7 +100,6 @@ export const useMattertag = (sdk: SDKInstance | null) => {
 
     const updateMattertagsData = async () => {
       try {
-        // Only update Mattertags that have corresponding sensor data
         const updates = mattertagIds.map(async (tagId, index) => {
           const sensor = sensors[index];
           if (!sensor) {
