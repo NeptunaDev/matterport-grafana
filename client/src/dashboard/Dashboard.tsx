@@ -106,7 +106,7 @@ const Dashboard = () => {
                   <MatterportViewer
                     key={viewerKey}
                     modelId={currentPlant.matterportSid}
-                    applicationKey="9dgydths42wyhyangsu855bca"
+                    applicationKey="hnd36ckp618rdffr20yn02hed"
                   />
                 )}
               </Box>
