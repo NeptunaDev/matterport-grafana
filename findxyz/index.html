@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <script>
+      (async function () {
+        const { connect } = await import(
+          "https://static.matterport.com/showcase-sdk/bootstrap/3.0.0-0-g0517b8d76c/sdk.es6.js"
+        );
+        window.MP_SDK = { connect };
+      })();
+    </script>
+  </head>
+  <link rel="stylesheet" href="./main.css">
+  <body>
+    <div>
+      <div id="text"></div>
+      <button id="button" type="button">Get Position</button>
+      <iframe
+        width="853"
+        height="480"
+        src="https://my.matterport.com/show?m=MsxcK6YbNgL&play=1&applicationKey=hnd36ckp618rdffr20yn02hed"
+        frameborder="0"
+        allow="fullscreen *"
+        id="showcase-iframe"
+      ></iframe>
+    </div>
+
+    <script src="./main.js"></script>
+  </body>
+</html>
