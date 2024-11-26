@@ -5,10 +5,11 @@ import {
   useState,
 } from "react";
 import { createPlantService } from "../../lib/Plant/application/PlantService";
-import { createLocalStoragePlantRepository } from "../../lib/Plant/infrastructure/LocalStoragePlantRepository";
 import { Plant, PlantSave } from "../../lib/Plant/domain/Plant";
+import { createAxiosPlantRepository } from "../../lib/Plant/infrastructure/AxiosPlantRepository";
+import { AxiosError } from "axios";
 
-const repository = createLocalStoragePlantRepository();
+const repository = createAxiosPlantRepository();
 const services = createPlantService(repository);
 const initialPlantSave: PlantSave = {
   id: undefined,
@@ -40,9 +41,9 @@ export default function PlantView() {
     setPlantSave((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDelete = (id: string) => {
-    services.remove(id);
-    fetchPlants();
+  const handleDelete =  async (id: string) => {
+    await services.remove(id);
+    await fetchPlants();
   };
 
   const submit: FormEventHandler = async (e) => {
@@ -52,7 +53,9 @@ export default function PlantView() {
       setPlantSave({ ...initialPlantSave });
       fetchPlants();
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof AxiosError) {
+        setError(error.response?.data.message);
+      } else if (error instanceof Error) {
         setError(error.message);
       }
     }
