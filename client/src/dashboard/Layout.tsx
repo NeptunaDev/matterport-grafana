@@ -1,33 +1,34 @@
-import { ReactNode } from 'react';
-import { 
-  Box, 
-  AppBar, 
-  Toolbar, 
-  Typography, 
+import { ReactNode } from "react";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Typography,
   CssBaseline,
-  Container
-} from '@mui/material';
-import Sidebar from '../components/SideBar';
-
+  Container,
+} from "@mui/material";
+import Sidebar from "../components/SideBar";
+import { usePlantManager } from "../hooks/usePlantManager";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
+  usePlantManager();
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <CssBaseline />
-      
+
       {/* App Bar */}
-      <AppBar 
-        position="fixed" 
-        sx={{ 
+      <AppBar
+        position="fixed"
+        sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: 'background.paper',
-          color: 'text.primary',
-          borderBottom: '1px solid',
-          borderColor: 'divider',
+          backgroundColor: "background.paper",
+          color: "text.primary",
+          borderBottom: "1px solid",
+          borderColor: "divider",
         }}
       >
         <Toolbar>
@@ -45,9 +46,9 @@ const Layout = ({ children }: LayoutProps) => {
         component="main"
         sx={{
           flexGrow: 1,
-          height: '100vh',
-          overflow: 'auto',
-          backgroundColor: 'background.default',
+          height: "100vh",
+          overflow: "auto",
+          backgroundColor: "background.default",
         }}
       >
         <Toolbar /> {/* This creates space for the AppBar */}

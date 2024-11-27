@@ -1,172 +1,121 @@
-import { Grid, Paper, Box, Typography } from "@mui/material";
+import { Grid, Paper, Box, createTheme, ThemeProvider } from "@mui/material";
 import MatterportViewer from "./components/render/Render3D";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Plant } from "./interfaces";
+import { styled } from "@mui/material/styles";
+
+const DarkPaper = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.grey[900],
+  padding: theme.spacing(3),
+  marginBottom: theme.spacing(2),
+  color: theme.palette.common.white,
+}));
+
+interface Iframe {
+  url: string;
+  id: string;
+}
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#2dd4bf",
+    },
+    background: {
+      default: "#111827",
+      paper: "#1f2937",
+    },
+  },
+});
 
 const Dashboard = () => {
   const { plantName } = useParams<{ plantName: string }>();
   const [currentPlant, setCurrentPlant] = useState<Plant | null>(null);
-  console.log("🚀 ~ Dashboard ~ currentPlant:", currentPlant)
+  const [iframes, setIframes] = useState<Iframe[]>([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPlant = async () => {
       try {
-        const response = await fetch("http://localhost:8000/plant");
+        const response = await fetch("/api/plant");
+        console.log("🚀 ~ fetchPlant ~ response:", response)
         const plants: Plant[] = await response.json();
         const plant = plants.find(
           (p) => p.name.toLowerCase() === plantName?.toLowerCase()
         );
         if (plant) {
           setCurrentPlant(plant);
+        } else {
+          // If plant is not found, navigate to the first available plant
+          if (plants.length > 0) {
+            navigate(`/plant/${plants[0].name}`);
+          }
         }
       } catch (error) {
         console.error("Error fetching plant:", error);
       }
     };
 
-    if (plantName) {
-      fetchPlant();
-    }
-  }, [plantName]);
+    fetchPlant();
+  }, [plantName, navigate]); // Add navigate to dependencies
+
+  // Key prop added to force remount of MatterportViewer
+  const viewerKey = currentPlant?.matterportSid || "default";
+
+  useEffect(() => {
+    if (!currentPlant || !currentPlant?.id) return;
+    const fetchGrafana = async () => {
+      try {
+        const response = await fetch(
+          `/api/iframe-grafana?idPlant=${currentPlant?.id}`
+        );
+        const data = await response.json();
+
+        setIframes(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchGrafana();
+  }, [currentPlant?.id]);
 
   return (
-    <Grid container spacing={2}>
-      {/* Left Column */}
-      <Grid item xs={12} md={6}>
-        {/* Extruder Motor Frequency Chart */}
-        <Paper sx={{ p: 2, mb: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Extruder Motor Frequency
-          </Typography>
-          <Box sx={{ height: 200 }}>{/* Chart component will go here */}</Box>
-        </Paper>
-
-        {/* Motor Velocity Chart */}
-        <Paper sx={{ p: 2, mb: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            PE16/PE30/PE28 Motor Velocity
-          </Typography>
-          <Box sx={{ height: 200 }}>{/* Chart component will go here */}</Box>
-        </Paper>
-
-        {/* Temperature Gauges */}
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          {["29_Extruder", "16_Extruder", "30_Extruder"].map((name) => (
-            <Grid item xs={4} key={name}>
-              <Paper sx={{ p: 2, textAlign: "center" }}>
-                <Typography variant="subtitle1" gutterBottom>
-                  {name} Temperature
-                </Typography>
-                <Box sx={{ height: 120 }}>
-                  {/* Gauge component will go here */}
-                </Box>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
-
-      {/* Right Column */}
-      <Grid item xs={12} md={6}>
-        {/* Matterport Viewer */}
-        <Paper sx={{ p: 2, mb: 2 }}>
-          <Box sx={{ height: 400, mb: 10 }}>
-            {currentPlant && (
-              <MatterportViewer
-                modelId={currentPlant.matterportSid}
-                applicationKey="9dgydths42wyhyangsu855bca"
-              />
-            )}
-          </Box>
-        </Paper>
-
-        {/* Status Indicators */}
-        <Paper sx={{ p: 2, mb: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            PE 30 Extruder Status
-          </Typography>
-          <Grid container spacing={1}>
-            {Array(5)
-              .fill("ONLINE")
-              .map((status, index) => (
-                <Grid item xs={2.4} key={index}>
-                  <Box
-                    sx={{
-                      bgcolor: "success.main",
-                      color: "white",
-                      p: 1,
-                      textAlign: "center",
-                      borderRadius: 1,
-                    }}
-                  >
-                    {status}
-                  </Box>
-                </Grid>
-              ))}
+    <ThemeProvider theme={darkTheme}>
+      <Box sx={{ bgcolor: "background.default", p: 3, minHeight: "100vh" }}>
+        <Grid container spacing={2}>
+          <Grid md={4}>
+            {iframes.map((iframe) => (
+              <iframe src={iframe.url} width="450" height="200"></iframe>
+            ))}
           </Grid>
-        </Paper>
-
-        {/* Velocity Metrics */}
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          {[
-            { label: "16_Extruder Velocity", value: "7.71", unit: "ft/ms" },
-            { label: "29_Extruder Velocity", value: "12.1", unit: "ft/ms" },
-            { label: "30_Extruder Velocity", value: "11.5", unit: "ft/ms" },
-          ].map((metric) => (
-            <Grid item xs={4} key={metric.label}>
-              <Paper
+          <Grid item xs={12} md={8}>
+            <DarkPaper>
+              <Box
                 sx={{
-                  p: 2,
-                  bgcolor: "success.light",
-                  textAlign: "center",
+                  height: 600,
+                  width: "100%",
+                  "& iframe": {
+                    width: "100%",
+                    height: "100%",
+                  },
                 }}
               >
-                <Typography variant="subtitle2" gutterBottom>
-                  {metric.label}
-                </Typography>
-                <Typography variant="h4">
-                  {metric.value}
-                  <Typography
-                    component="span"
-                    variant="subtitle1"
-                    sx={{ ml: 0.5 }}
-                  >
-                    {metric.unit}
-                  </Typography>
-                </Typography>
-              </Paper>
-            </Grid>
-          ))}
+                {currentPlant && (
+                  <MatterportViewer
+                    key={viewerKey}
+                    modelId={currentPlant.matterportSid}
+                    applicationKey="hnd36ckp618rdffr20yn02hed"
+                  />
+                )}
+              </Box>
+            </DarkPaper>
+          </Grid>
         </Grid>
-
-        {/* Current Metrics */}
-        <Grid container spacing={2}>
-          {[
-            { label: "30_Capstan Current", value: "11.2", unit: "Amps" },
-            { label: "30_Takeup Current", value: "19.9", unit: "Amps" },
-          ].map((metric) => (
-            <Grid item xs={6} key={metric.label}>
-              <Paper sx={{ p: 2, textAlign: "center" }}>
-                <Typography variant="subtitle2" gutterBottom>
-                  {metric.label}
-                </Typography>
-                <Typography variant="h4">
-                  {metric.value}
-                  <Typography
-                    component="span"
-                    variant="subtitle1"
-                    sx={{ ml: 0.5 }}
-                  >
-                    {metric.unit}
-                  </Typography>
-                </Typography>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
-      </Grid>
-    </Grid>
+      </Box>
+    </ThemeProvider>
   );
 };
 

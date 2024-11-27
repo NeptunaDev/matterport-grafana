@@ -19,6 +19,7 @@ export interface Vector3 {
   
   // SDK Interfaces
   export interface MattertagAPI {
+    remove(mattertagId: string[]): unknown;
     add: (descriptor: MattertagDescriptor) => Promise<string[]>;
     editBillboard: (
       mattertagId: string, 
