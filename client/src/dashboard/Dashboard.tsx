@@ -33,7 +33,6 @@ const Dashboard = () => {
     const fetchPlant = async () => {
       try {
         const response = await fetch("/api/plant");
-        console.log("🚀 ~ fetchPlant ~ response:", response);
         const plants: Plant[] = await response.json();
         const plant = plants.find(
           (p) => p.name.toLowerCase() === plantName?.toLowerCase()
@@ -85,6 +84,7 @@ const Dashboard = () => {
                 width={"100%"}
                 height={"100%"}
                 mx={"auto"}
+                key={iframe.id}
               >
                 <iframe src={iframe.url} width="100%" height="100%"></iframe>
               </Stack>
@@ -113,6 +113,7 @@ const Dashboard = () => {
               minHeight={"250px"}
               width={"100%"}
               height={"100%"}
+              key={iframe.id}
             >
               <iframe src={iframe.url} width="100%" height="100%"></iframe>
             </Stack>

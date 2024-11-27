@@ -1,14 +1,15 @@
 services:
   client:
-    build: ./client
+    build: 
+      context: ./client
+      dockerfile: Dockerfile # If is dev use Dockerfile.dev
     container_name: client
     restart: unless-stopped
-    volumes:
-      - './client:/app'
-      - '/app/node_modules'
-    ports:
-     #- '80:4173'
-      - '80:5173'
+    # volumes: # If is dev uncomment this block
+    #   - './client:/app'
+    #   - '/app/node_modules'
+    # ports:
+      # - '5173:5173'
     depends_on:
       - api
     env_file:
@@ -20,7 +21,7 @@ services:
     build: ./api
     container_name: api
     restart: unless-stopped
-    # ports:
+    # ports: # If is dev uncomment this block
     #   - '8000:8000'
     depends_on:
       - mongo
@@ -59,20 +60,13 @@ services:
     networks:
       - grafana_network
 
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-express
-    restart: unless-stopped
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_BASICAUTH_USERNAME: root
-      ME_CONFIG_BASICAUTH_PASSWORD: example
+  nginx:
+    build: ./nginx
     ports:
-      - '8081:8081'
+      - "80:80"
     depends_on:
-      - mongo
+      - client
+      - api
     networks:
       - grafana_network
 

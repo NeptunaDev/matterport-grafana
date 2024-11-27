@@ -13,6 +13,7 @@ export const useMattertag = () => {
   const { sdk } = useSelector((state: RootState) => state.sdk);
 
   useEffect(() => {
+    if(!plantSelected) return;
     const fetchDevices = async () => {
       try {
         const response = await fetch(
