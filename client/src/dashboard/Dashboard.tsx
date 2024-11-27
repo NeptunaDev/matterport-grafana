@@ -41,6 +41,7 @@ const Dashboard = () => {
     const fetchPlant = async () => {
       try {
         const response = await fetch("/api/plant");
+        console.log("🚀 ~ fetchPlant ~ response:", response)
         const plants: Plant[] = await response.json();
         const plant = plants.find(
           (p) => p.name.toLowerCase() === plantName?.toLowerCase()
@@ -106,7 +107,7 @@ const Dashboard = () => {
                   <MatterportViewer
                     key={viewerKey}
                     modelId={currentPlant.matterportSid}
-                    applicationKey="9dgydths42wyhyangsu855bca"
+                    applicationKey="hnd36ckp618rdffr20yn02hed"
                   />
                 )}
               </Box>

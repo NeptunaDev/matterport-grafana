@@ -14,7 +14,7 @@ import { Home as HomeIcon, Factory as FactoryIcon } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { setPlantSelected } from "../features/counter/plantSlice";
+import { setPlantSelected } from "../features/plant/plantSlice";
 
 interface MenuItem {
   name: string;

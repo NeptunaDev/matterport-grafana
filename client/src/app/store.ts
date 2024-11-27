@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import plantReducer from "../features/counter/plantSlice";
+import plantReducer from "../features/plant/plantSlice";
+import sdkReducer from "../features/sdk/sdkSlice";
 
 export const store = configureStore({
   reducer: {
     plant: plantReducer,
+    sdk: sdkReducer,
   },
 });
 
