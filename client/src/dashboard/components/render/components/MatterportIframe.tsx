@@ -1,46 +1,49 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
+import { SDKInstance } from "../../../../types/matterport";
+import { useDispatch } from "react-redux";
+import { setSdk } from "../../../../features/sdk/sdkSlice";
+import { useMattertag } from "../hooks/UseMattertag";
 
 interface MatterportViewerProps {
   modelSid: string;
   sdkKey: string;
 }
 
-declare global {
-  interface Window {
-    MP_SDK: {
-      connect: (frame: Window) => Promise<unknown>;
-    }
-  }
-}
-
-
-export const MatterportIframe = ({ modelSid, sdkKey }: MatterportViewerProps) => {
+export const MatterportIframe = ({
+  modelSid,
+  sdkKey,
+}: MatterportViewerProps) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const dispatch = useDispatch();
+  useMattertag();
 
   useEffect(() => {
-    const showcase = iframeRef.current;
-    if (!showcase) return;
+    if (!iframeRef) return;
+    if (!iframeRef.current) return;
 
+    const showcase = iframeRef.current;
     const showcaseWindow = showcase.contentWindow;
-    showcase.addEventListener('load', async function() {
+    if (!showcaseWindow) return;
+    showcase.addEventListener("load", async function () {
+      let mpSdk: SDKInstance;
       try {
-        const mpSdk = await showcaseWindow?.MP_SDK.connect(showcaseWindow);
-        console.log('SDK Connected', mpSdk);
-      } catch(e) {
+        mpSdk = await showcaseWindow.MP_SDK.connect(showcase);
+        dispatch(setSdk(mpSdk));
+      } catch (e) {
         console.error(e);
+        return;
       }
     });
-  }, []);
+  }, [dispatch]);
 
   return (
-    <iframe 
+    <iframe
       ref={iframeRef}
-      width="740" 
-      height="480" 
-      src={`/lib/showcase-bundle/showcase.html?m=${modelSid}&applicationKey=${sdkKey}`}
-      frameBorder="0" 
-      allowFullScreen 
-      allow="vr" 
-    />
+      id="showcase"
+      width="740"
+      height="480"
+      src={`/bundle/showcase.html?m=${modelSid}&applicationKey=${sdkKey}`}
+      allow="vr"
+    ></iframe>
   );
 };

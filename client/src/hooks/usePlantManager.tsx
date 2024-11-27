@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setPlant, setPlantSelected } from "../features/counter/plantSlice";
+import { setPlant, setPlantSelected } from "../features/plant/plantSlice";
 
 interface Plant {
   id: string;

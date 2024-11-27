@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { Device, MattertagDescriptor, Sensor } from "../../../interfaces";
-import { SDKInstance } from "../../../../types/matterport";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../app/store";
 
-export const useMattertag = (sdk: SDKInstance | null) => {
+export const useMattertag = () => {
   const [mattertagIds, setMattertagIds] = useState<string[]>([]);
   const intervalRef = useRef<number>();
   const [device, setDevice] = useState<Device[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
-  console.log("🚀 ~ useMattertag ~ sensors:", sensors)
+  // console.log("🚀 ~ useMattertag ~ sensors:", sensors)
   const { plantSelected } = useSelector((state: RootState) => state.plant);
+  const { sdk } = useSelector((state: RootState) => state.sdk);
 
   useEffect(() => {
     const fetchDevices = async () => {
