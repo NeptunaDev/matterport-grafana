@@ -25,7 +25,8 @@ const Layout = ({ children }: LayoutProps) => {
         position="fixed"
         sx={{
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: "background.paper",
+          background:
+            "linear-gradient(90deg, #0ea77b 0%, #9ed748 100%) !important",
           color: "text.primary",
           borderBottom: "1px solid",
           borderColor: "divider",
@@ -46,13 +47,10 @@ const Layout = ({ children }: LayoutProps) => {
         component="main"
         sx={{
           flexGrow: 1,
-          height: "100vh",
-          overflow: "auto",
-          backgroundColor: "background.default",
         }}
       >
         <Toolbar /> {/* This creates space for the AppBar */}
-        <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth={false} sx={{ my: 4, px: 0, height: "100%" }}>
           {children}
         </Container>
       </Box>

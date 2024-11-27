@@ -1,16 +1,8 @@
-import { Grid, Paper, Box, createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider, Stack } from "@mui/material";
 import MatterportViewer from "./components/render/Render3D";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Plant } from "./interfaces";
-import { styled } from "@mui/material/styles";
-
-const DarkPaper = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.grey[900],
-  padding: theme.spacing(3),
-  marginBottom: theme.spacing(2),
-  color: theme.palette.common.white,
-}));
 
 interface Iframe {
   url: string;
@@ -41,7 +33,7 @@ const Dashboard = () => {
     const fetchPlant = async () => {
       try {
         const response = await fetch("/api/plant");
-        console.log("🚀 ~ fetchPlant ~ response:", response)
+        console.log("🚀 ~ fetchPlant ~ response:", response);
         const plants: Plant[] = await response.json();
         const plant = plants.find(
           (p) => p.name.toLowerCase() === plantName?.toLowerCase()
@@ -49,7 +41,6 @@ const Dashboard = () => {
         if (plant) {
           setCurrentPlant(plant);
         } else {
-          // If plant is not found, navigate to the first available plant
           if (plants.length > 0) {
             navigate(`/plant/${plants[0].name}`);
           }
@@ -84,37 +75,50 @@ const Dashboard = () => {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <Box sx={{ bgcolor: "background.default", p: 3, minHeight: "100vh" }}>
-        <Grid container spacing={2}>
-          <Grid md={4}>
-            {iframes.map((iframe) => (
-              <iframe src={iframe.url} width="450" height="200"></iframe>
-            ))}
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <DarkPaper>
-              <Box
-                sx={{
-                  height: 600,
-                  width: "100%",
-                  "& iframe": {
-                    width: "100%",
-                    height: "100%",
-                  },
-                }}
+      <Stack gap={2} height={"100%"}>
+        <Stack direction={{ md: "row", xs: "column-reverse" }} gap={2}>
+          <Stack flex={1} gap={2}>
+            {iframes.slice(0, 3).map((iframe) => (
+              <Stack
+                maxWidth={"450px"}
+                minHeight={"250px"}
+                width={"100%"}
+                height={"100%"}
+                mx={"auto"}
               >
-                {currentPlant && (
-                  <MatterportViewer
-                    key={viewerKey}
-                    modelId={currentPlant.matterportSid}
-                    applicationKey="hnd36ckp618rdffr20yn02hed"
-                  />
-                )}
-              </Box>
-            </DarkPaper>
-          </Grid>
-        </Grid>
-      </Box>
+                <iframe src={iframe.url} width="100%" height="100%"></iframe>
+              </Stack>
+            ))}
+          </Stack>
+          <Stack flex={3} minHeight={{ md: "50vh", xs: "auto" }}>
+            {currentPlant && (
+              <MatterportViewer
+                key={viewerKey}
+                modelId={currentPlant.matterportSid}
+                applicationKey="hnd36ckp618rdffr20yn02hed"
+              />
+            )}
+          </Stack>
+        </Stack>
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          gap={2}
+          justifyContent={"flex-end"}
+          alignItems={"flex-end"}
+        >
+          {iframes.slice(3).map((iframe) => (
+            <Stack
+              mx={{ xs: "auto", md: 0 }}
+              maxWidth={"450px"}
+              minHeight={"250px"}
+              width={"100%"}
+              height={"100%"}
+            >
+              <iframe src={iframe.url} width="100%" height="100%"></iframe>
+            </Stack>
+          ))}
+        </Stack>
+      </Stack>
     </ThemeProvider>
   );
 };

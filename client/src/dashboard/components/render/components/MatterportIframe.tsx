@@ -40,8 +40,8 @@ export const MatterportIframe = ({
     <iframe
       ref={iframeRef}
       id="showcase"
-      width="740"
-      height="480"
+      width="100%"
+      height="100%"
       src={`/bundle/showcase.html?m=${modelSid}&applicationKey=${sdkKey}`}
       allow="vr"
     ></iframe>

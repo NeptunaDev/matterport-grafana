@@ -10,7 +10,7 @@ import {
   Divider,
   Box,
 } from "@mui/material";
-import { Home as HomeIcon, Factory as FactoryIcon } from "@mui/icons-material";
+import { Factory as FactoryIcon } from "@mui/icons-material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
@@ -32,11 +32,6 @@ const Sidebar = () => {
   const dispatch = useDispatch();
 
   const menuItems: MenuItem[] = [
-    {
-      name: "Home",
-      path: "/home",
-      icon: <HomeIcon />,
-    },
     ...plants.map((plant) => ({
       name: plant.name.charAt(0).toUpperCase() + plant.name.slice(1),
       path: `/plant/${plant.name.toLowerCase()}`,
@@ -64,10 +59,13 @@ const Sidebar = () => {
           backgroundColor: "background.default",
           borderRight: "1px solid",
           borderColor: "divider",
+          pt: 8,
         },
       }}
     >
-      <Toolbar>"logo"</Toolbar>
+      <Toolbar>
+        <img src="https://www.promigas.com/internas/logo-promigas-head.svg" />
+      </Toolbar>
       <Divider />
       <Box sx={{ overflow: "auto", flex: 1 }}>
         <List>
@@ -78,7 +76,8 @@ const Sidebar = () => {
                 onClick={() => handleNavigation(item.path, item.onClick)}
                 sx={{
                   "&.Mui-selected": {
-                    backgroundColor: "primary.main",
+                    background:
+                      "linear-gradient(90deg, #0ea77b 0%, #9ed748 100%) !important",
                     color: "primary.contrastText",
                     "&:hover": {
                       backgroundColor: "primary.dark",
