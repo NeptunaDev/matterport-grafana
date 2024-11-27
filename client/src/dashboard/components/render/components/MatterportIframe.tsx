@@ -1,29 +1,46 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 
-interface MatterportIframeProps {
-  id: string;
-  modelId: string;
-  applicationKey: string;
-  isLoading: boolean;
+interface MatterportViewerProps {
+  modelSid: string;
+  sdkKey: string;
 }
 
-export const MatterportIframe: React.FC<MatterportIframeProps> = ({
-  id,
-  modelId,
-  applicationKey,
-  isLoading,
-}) => (
-  <iframe
-    id={id}
-    src={`https://my.matterport.com/show?m=${modelId}&play=1&applicationKey=${applicationKey}`}
-    width="100%"
-    height="100%"
-    frameBorder="0"
-    allow="fullscreen *"
-    style={{ 
-      display: 'block',
-      opacity: isLoading ? 0.5 : 1,
-      transition: 'opacity 0.3s'
-    }}
-  />
-);
+declare global {
+  interface Window {
+    MP_SDK: {
+      connect: (frame: Window) => Promise<unknown>;
+    }
+  }
+}
+
+
+export const MatterportIframe = ({ modelSid, sdkKey }: MatterportViewerProps) => {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const showcase = iframeRef.current;
+    if (!showcase) return;
+
+    const showcaseWindow = showcase.contentWindow;
+    showcase.addEventListener('load', async function() {
+      try {
+        const mpSdk = await showcaseWindow?.MP_SDK.connect(showcaseWindow);
+        console.log('SDK Connected', mpSdk);
+      } catch(e) {
+        console.error(e);
+      }
+    });
+  }, []);
+
+  return (
+    <iframe 
+      ref={iframeRef}
+      width="740" 
+      height="480" 
+      src={`/lib/showcase-bundle/showcase.html?m=${modelSid}&applicationKey=${sdkKey}`}
+      frameBorder="0" 
+      allowFullScreen 
+      allow="vr" 
+    />
+  );
+};
