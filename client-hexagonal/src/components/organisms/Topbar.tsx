@@ -26,7 +26,7 @@ const AppBar = styled(MuiAppBar, {
     {
       props: ({ open }) => open,
       style: {
-        width: `calc(100% - ${drawerWidth + 8}px)`,
+        width: `calc(100% - ${drawerWidth + 16}px)`,
         marginLeft: `${drawerWidth + 8}px`,
         transition: theme.transitions.create(["margin", "width"], {
           easing: theme.transitions.easing.easeOut,

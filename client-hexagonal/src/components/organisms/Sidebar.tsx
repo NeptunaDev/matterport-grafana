@@ -15,6 +15,10 @@ import { createAxiosPlantRepository } from "../../lib/Plant/infrastructure/Axios
 import { createPlantService } from "../../lib/Plant/application/PlantService";
 import { useEffect } from "react";
 import { usePlantStore } from "../../hooks/usePlantStore";
+import { useSdkStore } from "../../hooks/useSdkStore";
+import { Plant } from "../../lib/Plant/domain/Plant";
+import { useDeviceStore } from "../../hooks/useDeviceStore";
+import { useSensorStore } from "../../hooks/useSensorStore";
 
 const drawerWidth = 240;
 const repository = createAxiosPlantRepository();
@@ -29,15 +33,30 @@ export function Sidebar({ handleDrawerClose, open }: SidebarProps) {
     queryKey: ["plants"],
     queryFn: service.find,
   });
-  const { setPlantSelected, setPlants, plantSelected } = usePlantStore(
-    (state) => state
+  const setPlantSelected = usePlantStore((state) => state.setPlantSelected);
+  const setPlants = usePlantStore((state) => state.setPlants);
+  const plantSelected = usePlantStore((state) => state.plantSelected);
+  const setInitialStore = useSdkStore((state) => state.setInitialStore);
+  const setInitialStoreDevices = useDeviceStore(
+    (state) => state.setInitialStore
   );
+  const setInitialStoreSensors = useSensorStore(
+    (state) => state.setInitialStore
+  );
+
+  const handleChangePlant = (plant: Plant) => {
+    setInitialStore();
+    setInitialStoreDevices();
+    setInitialStoreSensors();
+    setPlantSelected(plant);
+  };
 
   useEffect(() => {
     if (!plants || plants.length <= 0) return;
     setPlants(plants);
     setPlantSelected(plants[0]);
-  }, [plants, setPlants, setPlantSelected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plants]);
 
   return (
     <Stack sx={{ display: "flex" }}>
@@ -74,7 +93,7 @@ export function Sidebar({ handleDrawerClose, open }: SidebarProps) {
               <ListItem key={plant.id} disablePadding>
                 <ListItemButton
                   selected={plantSelected?.id === plant.id}
-                  onClick={() => setPlantSelected(plant)}
+                  onClick={() => handleChangePlant(plant)}
                 >
                   <ListItemIcon>
                     <Factory />

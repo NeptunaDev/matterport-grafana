@@ -8,7 +8,7 @@ const SDK_KEY = "hnd36ckp618rdffr20yn02hed";
 export function MatterportView() {
   const plant = usePlantStore((state) => state.plantSelected);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const setSdk = useSdkStore((state) => state.setSdk);
+  const { setSdk, sdk } = useSdkStore((state) => state);
 
   useEffect(() => {
     if (!iframeRef) return;
@@ -20,13 +20,15 @@ export function MatterportView() {
     showcase.addEventListener("load", async function () {
       try {
         const mpSdk = await showcaseWindow.MP_SDK.connect(showcase);
-        setSdk(mpSdk);
+        if (!sdk) setSdk(mpSdk);
+        console.log("Matterport SDK connected");
       } catch (e) {
         console.error(e);
         return;
       }
     });
-  }, [plant, plant?.matterportSid, setSdk]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plant?.matterportSid, iframeRef.current]);
 
   return (
     <>

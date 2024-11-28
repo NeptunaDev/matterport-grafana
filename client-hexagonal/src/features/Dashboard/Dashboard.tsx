@@ -6,20 +6,24 @@ import { useQuery } from "@tanstack/react-query";
 import { usePlantStore } from "../../hooks/usePlantStore";
 import { useFindDevices } from "../hooks/useFindDevice";
 import { useRenderSensorMatterTag } from "../hooks/useRenderSensorMatterTag";
+import { useUpdateSensorMatterTag } from "../hooks/useUpdateSensorMatterTag";
 
 const repository = createAxiosIframeGrafanaRepository();
 const service = createIframeGrafanaService(repository);
 export function Dashboard() {
-  const plantSelected = usePlantStore((state) => state.plantSelected);
+  const plantSelectedId = usePlantStore((state) => state.plantSelected?.id);
+
   useFindDevices();
   useRenderSensorMatterTag();
-  
+  useUpdateSensorMatterTag();
+
   const { data: iframes } = useQuery({
-    queryKey: ["iframe-grafanas", plantSelected?.id],
+    queryKey: ["iframe-grafanas", plantSelectedId],
     queryFn: () =>
       service.find({
-        ...(plantSelected && { idPlant: plantSelected.id }),
+        ...(plantSelectedId && { idPlant: plantSelectedId }),
       }),
+    enabled: !!plantSelectedId,
   });
 
   return (
