@@ -8,7 +8,10 @@ export const useMattertag = () => {
   const intervalRef = useRef<number>();
   const [device, setDevice] = useState<Device[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
-  // console.log("🚀 ~ useMattertag ~ sensors:", sensors)
+  console.log("🚀 ~ useMattertag ~ sensors:", sensors)
+  const [sensorsUpdate, setSensorsUpdate] = useState<Sensor[]>([]);
+  console.log("🚀 ~ useMattertag ~ setSensorsUpdate:", setSensorsUpdate)
+  console.log("🚀 ~ useMattertag ~ sensorsUpdate:", sensorsUpdate)
   const { plantSelected } = useSelector((state: RootState) => state.plant);
   const { sdk } = useSelector((state: RootState) => state.sdk);
 
@@ -27,6 +30,22 @@ export const useMattertag = () => {
 
     fetchDevices();
   }, [plantSelected]);
+  
+  // useEffect(() => {
+  //   const fetchSensorUpdate = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `/api/data-sensor?idSensor=${sensors.id}`
+  //       );
+  //       const data: Sensor[] = await response.json();
+  //       setSensorsUpdate(data);
+  //     } catch (error) {
+  //       console.error("Error fetching devices:", error);
+  //     }
+  //   };
+
+  //   fetchSensorUpdate();
+  // }, [plantSelected]);
 
   const findSensor = async (device: Device) => {
     const response = await fetch(
@@ -113,7 +132,7 @@ export const useMattertag = () => {
             label: sensor.title,
             description: `${
               sensor.description
-            }\nLast updated: ${new Date().toLocaleTimeString()}`,
+            }\nLast: ${new Date().toLocaleTimeString()}`,
           });
         });
 
