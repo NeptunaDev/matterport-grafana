@@ -1,12 +1,10 @@
-import { Button } from "@mui/material";
-import MainLayout from "./components/layout/mainLayout";
+import MainLayout from "./components/layout/MainLayout";
+import { Dashboard } from "./features/Dashboard/Dashboard";
 
 function App() {
   return (
     <MainLayout>
-      <Button variant="contained" color="primary">
-        Click me!
-      </Button>
+      <Dashboard />
     </MainLayout>
   );
 }

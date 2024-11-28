@@ -5,12 +5,8 @@ export interface Base {
 }
 
 export function idIsValid(id: string): boolean {
-  // const isValidMongoId = /^[0-9a-fA-F]{24}$/.test(id);
-  // if (!isValidMongoId) {
-  //   return false;
-  // }
-  // return true;
-  if (id === "") {
+  const isValidMongoId = /^[0-9a-fA-F]{24}$/.test(id);
+  if (!isValidMongoId) {
     return false;
   }
   return true;
