@@ -6,6 +6,8 @@ export interface IframeGrafana extends Base {
   readonly order: number;
 }
 
+export type IframeGrafanafind = Partial<IframeGrafana>;
+
 export function urlIsValid(url: string): boolean {
   const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
   const isValidUrl = urlPattern.test(url);

@@ -1,4 +1,4 @@
-import { Skeleton, Stack } from "@mui/material";
+import { Skeleton } from "@mui/material";
 import { usePlantStore } from "../../../hooks/usePlantStore";
 import { useEffect, useRef } from "react";
 import { ShowcaseEmbedWindow } from "../../../lib/Sdk/domain/Sdk";
@@ -29,18 +29,18 @@ export function MatterportView() {
   }, [plant, plant?.matterportSid, setSdk]);
 
   return (
-    <Stack>
+    <>
       {plant?.matterportSid ? (
         <iframe
           ref={iframeRef}
-          width="740"
-          height="480"
+          width="100%"
+          height="100%"
           src={`/bundle/showcase.html?m=${plant.matterportSid}&applicationKey=${SDK_KEY}`}
           allow="vr"
         ></iframe>
       ) : (
-        <Skeleton variant="rectangular" width="740px" height="480px" />
+        <Skeleton variant="rectangular" width="100%" height="100%" />
       )}
-    </Stack>
+    </>
   );
 }

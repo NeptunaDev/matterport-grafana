@@ -17,6 +17,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   borderRadius: '8px',
   backgroundColor: theme.palette.background.paper,
   minHeight: "calc(100vh - 88px)",
+  padding: "8px",
   variants: [
     {
       props: ({ open }) => open,

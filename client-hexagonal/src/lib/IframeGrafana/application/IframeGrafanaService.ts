@@ -1,10 +1,11 @@
-import { Repository } from "../../Shared/domain/Repository";
-import { IframeGrafana } from "../domain/IframeGrafana";
+import { IframeGrafana, IframeGrafanafind } from "../domain/IframeGrafana";
+import { IframeGrafanaRepository } from "../domain/IframeGrafanaRepository";
 
 export const createIframeGrafanaService = (
-  repository: Repository<IframeGrafana>
+  repository: IframeGrafanaRepository
 ) => ({
-  find: async () => await repository.find(),
+  find: async (iframeGrafanafind?: IframeGrafanafind) =>
+    await repository.find(iframeGrafanafind),
   save: async (iframeGrafana: IframeGrafana) => {
     await repository.save(iframeGrafana);
   },

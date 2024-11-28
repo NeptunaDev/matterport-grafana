@@ -1970,7 +1970,7 @@ export declare namespace Mattertag {
 	 * A subset of the MattertagData used to add Mattertags through the sdk.
 	 * Most properties are optional except those used for positioning: `anchorPosition`, `stemVector`.
 	 */
-	interface MattertagDescriptor {
+	export interface MattertagDescriptor {
 		anchorPosition: Vector3;
 		stemVector: Vector3;
 		stemVisible?: boolean;
