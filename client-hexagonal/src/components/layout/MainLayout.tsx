@@ -8,13 +8,15 @@ const drawerWidth = 240;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${drawerWidth}px`,
+  margin: '8px',
+  marginTop: '0',
+  borderRadius: '8px',
+  backgroundColor: theme.palette.background.paper,
+  minHeight: "calc(100vh - 88px)",
   variants: [
     {
       props: ({ open }) => open,
@@ -23,7 +25,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
           easing: theme.transitions.easing.easeOut,
           duration: theme.transitions.duration.enteringScreen,
         }),
-        marginLeft: 0,
+        marginLeft: drawerWidth + 8,
       },
     },
   ],
@@ -41,7 +43,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <Stack>
       <Topbar handleDrawerOpen={handleDrawerOpen} open={open} />
-      <Stack>
+      <Stack gap={1}>
         <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
         <Main open={open}>{children}</Main>
       </Stack>

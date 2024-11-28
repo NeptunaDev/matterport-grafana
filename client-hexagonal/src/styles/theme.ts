@@ -9,7 +9,7 @@ export const theme = createTheme({
   palette: {
     ...palette,
   },
-  spacing: 2,
+  spacing: 8,
   shape: {
     borderRadius: 8,
   },

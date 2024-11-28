@@ -18,12 +18,16 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
+  margin: "8px",
+  marginBottom: "0",
+  width: `calc(100% - 16px)`,
+  borderRadius: "8px",
   variants: [
     {
       props: ({ open }) => open,
       style: {
-        width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: `${drawerWidth}px`,
+        width: `calc(100% - ${drawerWidth + 8}px)`,
+        marginLeft: `${drawerWidth + 8}px`,
         transition: theme.transitions.create(["margin", "width"], {
           easing: theme.transitions.easing.easeOut,
           duration: theme.transitions.duration.enteringScreen,
@@ -40,25 +44,18 @@ interface TopbarProps {
 
 export default function Topbar({ open, handleDrawerOpen }: TopbarProps) {
   return (
-    <AppBar position="fixed" open={open}>
+    <AppBar position="sticky" open={open}>
       <Toolbar>
         <IconButton
           color="inherit"
           aria-label="open drawer"
           onClick={handleDrawerOpen}
           edge="start"
-          sx={[
-            {
-              mr: 2,
-            },
-            open && { display: "none" },
-          ]}
+          sx={[open && { display: "none" }]}
         >
-          <MenuIcon sx={{color: 'text.primary'}} />
+          <MenuIcon sx={{ color: "text.primary" }} />
         </IconButton>
-        <Typography variant="h4">
-          Promigas
-        </Typography>
+        <Typography variant="h4">Promigas</Typography>
       </Toolbar>
     </AppBar>
   );
