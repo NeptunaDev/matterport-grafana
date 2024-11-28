@@ -17,6 +17,9 @@ export const usePlantManager = () => {
     const fetchPlants = async () => {
       try {
         const response = await fetch("/api/plant");
+        if (!response.ok) {
+          throw new Error("Failed to fetch plants");
+        }
         const data: Plant[] = await response.json();
         dispatch(setPlant(data));
         dispatch(setPlantSelected(data[0]));

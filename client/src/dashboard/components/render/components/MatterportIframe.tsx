@@ -28,6 +28,7 @@ export const MatterportIframe = ({
       let mpSdk: SDKInstance;
       try {
         mpSdk = await showcaseWindow.MP_SDK.connect(showcase);
+        if (!mpSdk) return;
         dispatch(setSdk(mpSdk));
       } catch (e) {
         console.error(e);
