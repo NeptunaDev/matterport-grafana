@@ -9,16 +9,36 @@ import {
   ListItemText,
   Stack,
 } from "@mui/material";
-import { ChevronLeft, Inbox, Mail } from "@mui/icons-material";
+import { ChevronLeft, Factory } from "@mui/icons-material";
+import { useQuery } from "@tanstack/react-query";
+import { createAxiosPlantRepository } from "../../lib/Plant/infrastructure/AxiosPlantRepository";
+import { createPlantService } from "../../lib/Plant/application/PlantService";
+import { useEffect } from "react";
+import { usePlantStore } from "../../hooks/usePlantStore";
 
 const drawerWidth = 240;
-
+const repository = createAxiosPlantRepository();
+const service = createPlantService(repository);
 interface SidebarProps {
   handleDrawerClose: () => void;
   open: boolean;
 }
 
 export function Sidebar({ handleDrawerClose, open }: SidebarProps) {
+  const { data: plants } = useQuery({
+    queryKey: ["plants"],
+    queryFn: service.find,
+  });
+  const { setPlantSelected, setPlants, plantSelected } = usePlantStore(
+    (state) => state
+  );
+
+  useEffect(() => {
+    if (!plants || plants.length <= 0) return;
+    setPlants(plants);
+    setPlantSelected(plants[0]);
+  }, [plants, setPlants, setPlantSelected]);
+
   return (
     <Stack sx={{ display: "flex" }}>
       <Drawer
@@ -35,40 +55,34 @@ export function Sidebar({ handleDrawerClose, open }: SidebarProps) {
         open={open}
       >
         <Stack alignItems={"flex-end"} padding={1} justifyContent={"center"}>
-          <IconButton onClick={handleDrawerClose} sx={{
-            '&.MuiTouchRipple-root': {
-              display: "none",
-              position: 'relative'
-            }
-          }}>
+          <IconButton
+            onClick={handleDrawerClose}
+            sx={{
+              "&.MuiTouchRipple-root": {
+                display: "none",
+                position: "relative",
+              },
+            }}
+          >
             <ChevronLeft sx={{ color: "primary.main" }} />
           </IconButton>
         </Stack>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <Inbox /> : <Mail />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <Inbox /> : <Mail />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {plants &&
+            plants.map((plant) => (
+              <ListItem key={plant.id} disablePadding>
+                <ListItemButton
+                  selected={plantSelected?.id === plant.id}
+                  onClick={() => setPlantSelected(plant)}
+                >
+                  <ListItemIcon>
+                    <Factory />
+                  </ListItemIcon>
+                  <ListItemText primary={plant.name} />
+                </ListItemButton>
+              </ListItem>
+            ))}
         </List>
       </Drawer>
     </Stack>
