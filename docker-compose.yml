@@ -2,14 +2,14 @@ services:
   client:
     build: 
       context: ./client
-      dockerfile: Dockerfile # If is dev use Dockerfile.dev
+      dockerfile: Dockerfile.dev # If is dev use Dockerfile.dev
     container_name: client
     restart: unless-stopped
-    # volumes: # If is dev uncomment this block
-    #   - './client:/app'
-    #   - '/app/node_modules'
-    # ports:
-      # - '5173:5173'
+    volumes: # If is dev uncomment this block
+      - './client:/app'
+      - '/app/node_modules'
+    ports:
+      - '5173:5173'
     depends_on:
       - api
     env_file:
@@ -21,8 +21,8 @@ services:
     build: ./api
     container_name: api
     restart: unless-stopped
-    # ports: # If is dev uncomment this block
-    #   - '8000:8000'
+    ports: # If is dev uncomment this block
+      - '8000:8000'
     depends_on:
       - mongo
     env_file:
