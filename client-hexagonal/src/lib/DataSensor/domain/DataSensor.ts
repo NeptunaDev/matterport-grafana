@@ -9,5 +9,5 @@ export interface DataSensor extends Base {
 
 export type DataSensorFind = Omit<Partial<DataSensor>, "idSensor"> & {
   sensorId?: string;
-  getLatest?: boolean;
+  getLatestQuantity?: number;
 };

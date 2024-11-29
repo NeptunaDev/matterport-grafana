@@ -8,6 +8,6 @@ export interface DataSensorRepository
   find(
     filter: DataSensorFilters,
     populatedIdSensor?: boolean,
-    getLatest?: boolean,
+    getLatest?: number,
   ): Promise<DataSensor[]>;
 }

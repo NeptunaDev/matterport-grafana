@@ -21,7 +21,7 @@ export class DataSensorFind {
     updatedAt?: Date,
     deletedAt?: Date | null,
     populatedIdSensor?: boolean,
-    getLatest?: boolean,
+    getLatest?: number,
   ): Promise<DataSensor[]> {
     const filters: DataSensorFilters = {
       ...(id && { id: new DataSensorId(id) }),
