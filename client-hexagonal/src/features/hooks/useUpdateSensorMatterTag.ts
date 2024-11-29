@@ -8,6 +8,7 @@ import { useSdkStore } from "../../hooks/useSdkStore";
 const repository = createAxiosDataSensorRepository();
 const service = createDataSensorService(repository);
 
+// TODO: useQuery don't cant update the sensors of the store
 export const useUpdateSensorMatterTag = () => {
   const sensors = useSensorStore((state) => state.sensors);
   const sdk = useSdkStore((state) => state.sdk);

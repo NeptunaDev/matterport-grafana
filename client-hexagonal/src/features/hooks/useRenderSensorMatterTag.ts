@@ -35,6 +35,9 @@ export const useRenderSensorMatterTag = () => {
 
       const newSensorTags = await Promise.all(
         fetchedSensors.map(async (sensor): Promise<SensorTag> => {
+          const existingSensor = sensors[sensor.id];
+          if (existingSensor && existingSensor.matterportId)
+            return { ...existingSensor };
           const tag: Mattertag.MattertagDescriptor = {
             label: sensor.title,
             anchorPosition: {
@@ -49,7 +52,6 @@ export const useRenderSensorMatterTag = () => {
               z: sensor.vector[2],
             },
           };
-
           const [id] = await sdk.Tag.add(tag);
           return { ...sensor, matterportId: id };
         })

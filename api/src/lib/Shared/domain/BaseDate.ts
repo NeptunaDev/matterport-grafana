@@ -16,6 +16,7 @@ export class BaseDate {
     }
 
     const currentData = new Date();
+    currentData.setMinutes(currentData.getSeconds() + 100);
     if (this.value > currentData) {
       throw new Error(`Date cannot be in the future: ${this.value}`);
     }
