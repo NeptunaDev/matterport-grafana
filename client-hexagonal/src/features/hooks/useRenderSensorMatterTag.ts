@@ -69,6 +69,5 @@ export const useRenderSensorMatterTag = () => {
     };
 
     render();
-    console.log("Se renderiza useRenderSensorMatterTag");
   }, [sdk, response, setSensors, sensors]);
 };

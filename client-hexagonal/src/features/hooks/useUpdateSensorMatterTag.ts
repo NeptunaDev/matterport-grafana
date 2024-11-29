@@ -16,7 +16,6 @@ export const useUpdateSensorMatterTag = () => {
     queries: Object.values(sensors).map((sensor) => ({
       queryKey: ["data-sensor", sensor.id],
       queryFn: () => {
-        console.log("Fetching data for sensor", sensor.id);
         return service.find({ sensorId: sensor.id, getLatest: true });
       },
       refetchInterval: 1000,
@@ -24,7 +23,6 @@ export const useUpdateSensorMatterTag = () => {
   });
 
   useEffect(() => {
-    console.log(response);
     if (!sdk) return;
     if (!response || response.some((res) => res.isLoading || res.isError))
       return;

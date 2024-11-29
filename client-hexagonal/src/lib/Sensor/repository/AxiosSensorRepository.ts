@@ -7,19 +7,19 @@ const queryService = createQueryService();
 export const createAxiosSensorRepository = (): SensorRepository => ({
   find: async (sensorFind) => {
     const queries = queryService.createQueries(sensorFind ?? {});
-    let url = "http://localhost:8000/sensor";
+    let url = "/api/sensor";
     if (queries) url = `${url}${queries}`;
     const response = await axios.get<Sensor[]>(url);
     return response.data;
   },
   save: async (sensor) => {
     if (sensor.id) {
-      await axios.patch(`http://localhost:8000/sensor/${sensor.id}`, sensor);
+      await axios.patch(`/api/sensor/${sensor.id}`, sensor);
     } else {
-      await axios.post("http://localhost:8000/sensor", sensor);
+      await axios.post("/api/sensor", sensor);
     }
   },
   remove: async (id) => {
-    await axios.delete(`http://localhost:8000/sensor/${id}`);
+    await axios.delete(`/api/sensor/${id}`);
   },
 });

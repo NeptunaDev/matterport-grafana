@@ -7,19 +7,19 @@ const queryService = createQueryService();
 export const createAxiosDeviceRepository = (): DeviceRepository => ({
   find: async (deviceFind) => {
     const queries = queryService.createQueries(deviceFind ?? {});
-    let url = "http://localhost:8000/device";
+    let url = "/api/device";
     if (queries) url = `${url}${queries}`;
     const response = await axios.get<Device[]>(url);
     return response.data;
   },
   save: async (device) => {
     if (device.id) {
-      await axios.patch(`http://localhost:8000/device/${device.id}`, device);
+      await axios.patch(`/api/device/${device.id}`, device);
     } else {
-      await axios.post("http://localhost:8000/device", device);
+      await axios.post("/api/device", device);
     }
   },
   remove: async (id) => {
-    await axios.delete(`http://localhost:8000/device/${id}`);
+    await axios.delete(`/api/device/${id}`);
   },
 });
