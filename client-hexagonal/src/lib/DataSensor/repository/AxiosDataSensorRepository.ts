@@ -1,9 +1,9 @@
 import axios from "axios";
 import { createQueryService } from "../../Shared/application/queryService";
-import { SensorDataRepository } from "../domain/SensorDataRepository";
+import { DataSensorRepository } from "../domain/DataSensorRepository";
 
 const queryService = createQueryService();
-export const createAxiosSensorRepository = (): SensorDataRepository => ({
+export const createAxiosDataSensorRepository = (): DataSensorRepository => ({
   find: async (sensorDataFind) => {
     const queries = queryService.createQueries(sensorDataFind ?? {});
     let url = "http://localhost:8000/data-sensor";

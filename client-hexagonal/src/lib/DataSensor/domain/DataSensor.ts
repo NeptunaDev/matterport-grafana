@@ -1,10 +1,13 @@
 import { Base } from "../../Shared/domain/Base";
 
-export interface SensorData extends Base {
+export interface DataSensor extends Base {
   readonly idSensor: string;
   readonly variable: string;
   readonly value: number;
   readonly unit: string;
 }
 
-export type SensorDataFind = Partial<SensorData>;
+export type DataSensorFind = Omit<Partial<DataSensor>, "idSensor"> & {
+  sensorId?: string;
+  getLatest?: boolean;
+};

@@ -26,18 +26,15 @@ export const useRenderSensorMatterTag = () => {
   useEffect(() => {
     const render = async () => {
       if (!sdk) return;
-      if (!response || response.some((res) => res.isLoading || res.isError)) return;
-      
-
+      if (!response || response.some((res) => res.isLoading || res.isError))
+        return;
       const fetchedSensors = response
         .flatMap((res) => res.data)
         .filter((sensor) => sensor !== undefined);
-
       if (!fetchedSensors || fetchedSensors.length === 0) return;
 
-      // Crear nuevos tags solo si no existen en el estado global
       const newSensorTags = await Promise.all(
-        fetchedSensors.map(async (sensor): Promise<SensorTag> => {          
+        fetchedSensors.map(async (sensor): Promise<SensorTag> => {
           const tag: Mattertag.MattertagDescriptor = {
             label: sensor.title,
             anchorPosition: {
@@ -59,14 +56,19 @@ export const useRenderSensorMatterTag = () => {
       );
 
       const validNewTags = newSensorTags.filter(
-        (tag) => tag && !sensors.some((s) => s.id === tag.id)
+        (sensorTag) => sensorTag && !sensors[sensorTag.id]
       );
-      
+
+      const validNewTagsObject: { [key: string]: SensorTag } = {};
+      validNewTags.forEach(
+        (sensorTag) => (validNewTagsObject[sensorTag.id] = { ...sensorTag })
+      );
       if (validNewTags.length > 0) {
-        setSensors([...sensors, ...validNewTags]);
+        setSensors({ ...sensors, ...validNewTagsObject });
       }
     };
 
     render();
+    console.log("Se renderiza useRenderSensorMatterTag");
   }, [sdk, response, setSensors, sensors]);
 };
