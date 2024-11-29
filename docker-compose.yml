@@ -13,7 +13,7 @@ services:
     depends_on:
       - api
     env_file:
-      - ./client/.env
+      - ./client-hexagonal/.env
     networks:
       - grafana_network
 

@@ -7,6 +7,7 @@ import { usePlantStore } from "../../hooks/usePlantStore";
 import { useFindDevices } from "../hooks/useFindDevice";
 import { useRenderSensorMatterTag } from "../hooks/useRenderSensorMatterTag";
 import { useUpdateSensorMatterTag } from "../hooks/useUpdateSensorMatterTag";
+import { DynamicChart } from "./components/DynamicChart";
 
 const repository = createAxiosIframeGrafanaRepository();
 const service = createIframeGrafanaService(repository);
@@ -46,6 +47,7 @@ export function Dashboard() {
         </Stack>
       </Stack>
       <Stack direction={"row"} justifyContent={"flex-end"} gap={2} flex={1}>
+        <DynamicChart />
         {iframes &&
           iframes.slice(3).map((iframe) => (
             <Stack key={iframe.id}>
