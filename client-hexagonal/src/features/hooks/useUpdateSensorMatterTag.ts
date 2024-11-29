@@ -17,7 +17,7 @@ export const useUpdateSensorMatterTag = () => {
     queries: Object.values(sensors).map((sensor) => ({
       queryKey: ["data-sensor", sensor.id],
       queryFn: () => {
-        return service.find({ sensorId: sensor.id, getLatest: true });
+        return service.find({ sensorId: sensor.id, getLatestQuantity: 1 });
       },
       refetchInterval: 1000,
     })),

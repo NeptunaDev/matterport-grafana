@@ -58,7 +58,9 @@ export class DataSensorController {
           queries.updatedAt ? new Date(queries.updatedAt) : null,
           queries.deletedAt ? new Date(queries.deletedAt) : null,
           queries.populateidSensor === 'true',
-          queries.getLatest === 'true',
+          queries.getLatestQuantity
+            ? parseInt(queries.getLatestQuantity)
+            : null,
         )
       ).map((dataSensor) => dataSensor.mapToPrimitivesWithoutDeletedAt());
     } catch (error) {
