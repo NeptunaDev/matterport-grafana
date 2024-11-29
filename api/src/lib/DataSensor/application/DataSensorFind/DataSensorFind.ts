@@ -21,6 +21,7 @@ export class DataSensorFind {
     updatedAt?: Date,
     deletedAt?: Date | null,
     populatedIdSensor?: boolean,
+    getLatest?: boolean,
   ): Promise<DataSensor[]> {
     const filters: DataSensorFilters = {
       ...(id && { id: new DataSensorId(id) }),
@@ -33,6 +34,6 @@ export class DataSensorFind {
       ...(deletedAt && { deletedAt: new BaseDate(deletedAt) }),
     };
 
-    return this.repository.find(filters, populatedIdSensor);
+    return this.repository.find(filters, populatedIdSensor, getLatest);
   }
 }

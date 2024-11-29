@@ -1,7 +1,7 @@
 services:
   client:
     build: 
-      context: ./client
+      context: ./client-hexagonal
       dockerfile: Dockerfile # If is dev use Dockerfile.dev
     container_name: client
     restart: unless-stopped
