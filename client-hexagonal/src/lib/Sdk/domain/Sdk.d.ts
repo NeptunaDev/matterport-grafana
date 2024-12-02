@@ -38,6 +38,7 @@ export type Color = {
  * An object representing an observer that is subscribed to an observable.
  */
 export interface ISubscription {
+  unsubscribe(): void | { [UNDEFINED_VOID_ONLY]: never; };
 	/**
 	 * Removes the observer from the observable so that it stops receiving updates.
 	 */
