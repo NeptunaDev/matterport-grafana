@@ -88,6 +88,17 @@ export function Sidebar({ handleDrawerClose, open }: SidebarProps) {
         </Stack>
         <Divider />
         <List>
+          <Stack
+            component="img"
+            src="https://minciencias.gov.co/sites/default/files/promigas.jpg"
+            alt="Logo Promigas"
+            sx={{
+              width: "100%",
+              padding: 2,
+              maxHeight: "200px",
+              objectFit: "contain",
+            }}
+          />
           {plants &&
             plants.map((plant) => (
               <ListItem key={plant.id} disablePadding>
