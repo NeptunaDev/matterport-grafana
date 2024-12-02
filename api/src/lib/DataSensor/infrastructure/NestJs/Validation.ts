@@ -32,6 +32,10 @@ export class FindQueries extends BaseFindQueries {
   @IsBooleanString()
   @IsOptional()
   populateidSensor?: string;
+
+  @IsNumberString()
+  @IsOptional()
+  getLatestQuantity?: string;
 }
 
 export class CreateBody {

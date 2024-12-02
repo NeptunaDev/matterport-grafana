@@ -45,6 +45,7 @@ export class MongoDataSensorRepository implements DataSensorRepository {
   async find(
     filter: DataSensorFilters,
     populatedIdSensor?: boolean,
+    getLatest?: number,
   ): Promise<DataSensor[]> {
     const query = this.model.find({
       deletedAt: filter.deletedAt?.value ?? { $eq: null },
@@ -56,6 +57,7 @@ export class MongoDataSensorRepository implements DataSensorRepository {
     });
 
     if (populatedIdSensor) query.populate('idSensor');
+    if (getLatest) query.sort({ updatedAt: -1 }).limit(getLatest);
     const dataSensors = await query.exec();
 
     return dataSensors.map(MongoDataSensorService.toDomain);
