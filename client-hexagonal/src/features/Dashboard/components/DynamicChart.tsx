@@ -38,7 +38,7 @@ export function DynamicChart() {
         <iframe src={data[0].url} width={"100%"} height={"100%"}></iframe>
       ) : (
         <div>
-          aqui se pinta la grafica del sensor {sensor?.title} en el lugar
+          {sensor?.title}
           {sensor?.place}
           {sensor?.place} {sensor?.id}
           {data?.[0]?.idPlant}

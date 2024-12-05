@@ -19,6 +19,7 @@ import { useSdkStore } from "../../hooks/useSdkStore";
 import { Plant } from "../../lib/Plant/domain/Plant";
 import { useDeviceStore } from "../../hooks/useDeviceStore";
 import { useSensorStore } from "../../hooks/useSensorStore";
+import { theme } from "../../styles/theme";
 
 const drawerWidth = 240;
 const repository = createAxiosPlantRepository();
@@ -67,6 +68,7 @@ export function Sidebar({ handleDrawerClose, open }: SidebarProps) {
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
+            backgroundColor: theme.palette.primary.main,
           },
         }}
         variant="persistent"
@@ -83,14 +85,14 @@ export function Sidebar({ handleDrawerClose, open }: SidebarProps) {
               },
             }}
           >
-            <ChevronLeft sx={{ color: "primary.main" }} />
+            <ChevronLeft sx={{ color: "background.paper" }} />
           </IconButton>
         </Stack>
         <Divider />
         <List>
           <Stack
             component="img"
-            src="https://minciencias.gov.co/sites/default/files/promigas.jpg"
+            src="/PROMIGAS-01.png"
             alt="Logo Promigas"
             sx={{
               width: "100%",
@@ -107,7 +109,7 @@ export function Sidebar({ handleDrawerClose, open }: SidebarProps) {
                   onClick={() => handleChangePlant(plant)}
                 >
                   <ListItemIcon>
-                    <Factory />
+                    <Factory sx={{ color: "background.paper" }} />
                   </ListItemIcon>
                   <ListItemText primary={plant.name} />
                 </ListItemButton>
