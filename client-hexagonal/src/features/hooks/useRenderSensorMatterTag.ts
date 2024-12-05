@@ -51,6 +51,11 @@ export const useRenderSensorMatterTag = () => {
               y: sensor.vector[1],
               z: sensor.vector[2],
             },
+            color: {
+              r: 0,
+              g: 160,
+              b: 215
+            }
           };
           const [id] = await sdk.Tag.add(tag);
           return { ...sensor, matterportId: id };
