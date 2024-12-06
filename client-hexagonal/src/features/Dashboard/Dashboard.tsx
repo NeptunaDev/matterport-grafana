@@ -43,10 +43,6 @@ const LastUpdateDisplay = () => {
     <Typography
       variant="caption"
       sx={{
-        position: "absolute",
-        top: 8,
-        right: 8,
-        color: "red",
         padding: "4px 8px",
         borderRadius: 1,
         zIndex: 1000,
