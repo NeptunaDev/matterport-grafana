@@ -1,9 +1,9 @@
 import { styled } from "@mui/material/styles";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+import { IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { useRefreshStore } from "../../hooks/useRefreshStore";
+import { Refresh } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -42,20 +42,39 @@ interface TopbarProps {
   handleDrawerOpen: () => void;
 }
 
-export default function Topbar({ open, handleDrawerOpen }: TopbarProps) {
+export default function Topbar({ open }: TopbarProps) {
+  const refreshAll = useRefreshStore((state) => state.refreshAll);
+
   return (
     <AppBar position="sticky" open={open}>
-      <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
-          sx={[open && { display: "none" }]}
-        >
-          <MenuIcon sx={{ color: "text.primary" }} />
-        </IconButton>
-        <Typography variant="h4">Promigas</Typography>
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography sx={{color: 'background.paper', fontWeight: 800}}>Progeogas - Sede Caracoli</Typography>
+        <Stack direction="row" alignItems="center" gap={2}>
+          <Tooltip title="Actualizar todas las gráficas">
+            <IconButton 
+              onClick={refreshAll}
+              sx={{ 
+                backgroundColor: 'white',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)'
+                }
+              }}
+            >
+              <Refresh />
+            </IconButton>
+          </Tooltip>
+          <Stack
+            component="img"
+            src="/PROMIGAS-01.png"
+            alt="Logo Promigas"
+            sx={{
+              width: "auto",
+              padding: 2,
+              maxHeight: "75px",
+              objectFit: "contain",
+            }}
+          />
+        </Stack>
       </Toolbar>
     </AppBar>
   );
