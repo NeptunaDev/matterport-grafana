@@ -23,21 +23,16 @@ const REFRESH_INTERVAL = 120000;
 const LastUpdateDisplay = () => {
   const lastUpdate = useLastUpdateStore((state) => state.lastUpdate);
 
-  console.log("lastUpdate recibido:", lastUpdate);
-
   if (!lastUpdate) return null;
 
   const date = new Date(lastUpdate);
-  console.log("date convertida:", date); 
 
   if (isNaN(date.getTime())) {
-    console.log("Fecha inválida"); 
     return null;
   }
 
-  date.setHours(date.getHours() - 5);
+  date.setHours(date.getHours());
   const adjustedTime = date.toLocaleString();
-  console.log("adjustedTime:", adjustedTime);
 
   return (
     <Typography

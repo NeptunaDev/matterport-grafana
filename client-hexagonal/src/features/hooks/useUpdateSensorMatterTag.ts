@@ -34,12 +34,7 @@ export const useUpdateSensorMatterTag = () => {
 
  const updateMatterportTag = useCallback(
   (dataSensor: DataSensor) => {
-    console.log("🚀 ~ useUpdateSensorMatterTag ~ dataSensor:", dataSensor.createdAt);
-    
-    // Convertir a fecha y restar 5 horas
     const date = new Date(dataSensor.createdAt);
-    date.setHours(date.getHours() - 5);
-    
     setLastUpdate(date.toLocaleString());
     
     const tag = sensors[dataSensor.idSensor];
