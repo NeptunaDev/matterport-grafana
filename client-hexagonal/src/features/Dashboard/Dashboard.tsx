@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { MatterportView } from "./components/MatterportView";
 import { createAxiosIframeGrafanaRepository } from "../../lib/IframeGrafana/repository/AxiosIframeGrafanaRepository";
 import { createIframeGrafanaService } from "../../lib/IframeGrafana/application/IframeGrafanaService";
@@ -6,34 +6,85 @@ import { useQuery } from "@tanstack/react-query";
 import { usePlantStore } from "../../hooks/usePlantStore";
 import { useFindDevices } from "../hooks/useFindDevice";
 import { useRenderSensorMatterTag } from "../hooks/useRenderSensorMatterTag";
-import { useUpdateSensorMatterTag } from "../hooks/useUpdateSensorMatterTag";
+import {
+  useLastUpdateStore,
+  useUpdateSensorMatterTag,
+} from "../hooks/useUpdateSensorMatterTag";
 import { DynamicChart } from "./components/DynamicChart";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import { IframeGrafana } from "../../lib/IframeGrafana/domain/IframeGrafana";
+import { useRefreshStore } from "../../hooks/useRefreshStore";
 
 const repository = createAxiosIframeGrafanaRepository();
 const service = createIframeGrafanaService(repository);
 
-const REFRESH_INTERVAL = 20000;
+const REFRESH_INTERVAL = 120000;
+
+const LastUpdateDisplay = () => {
+  const lastUpdate = useLastUpdateStore((state) => state.lastUpdate);
+
+  console.log("lastUpdate recibido:", lastUpdate);
+
+  if (!lastUpdate) return null;
+
+  const date = new Date(lastUpdate);
+  console.log("date convertida:", date); 
+
+  if (isNaN(date.getTime())) {
+    console.log("Fecha inválida"); 
+    return null;
+  }
+
+  date.setHours(date.getHours() - 5);
+  const adjustedTime = date.toLocaleString();
+  console.log("adjustedTime:", adjustedTime);
+
+  return (
+    <Typography
+      variant="caption"
+      sx={{
+        position: "absolute",
+        top: 8,
+        right: 8,
+        color: "red",
+        padding: "4px 8px",
+        borderRadius: 1,
+        zIndex: 1000,
+      }}
+    >
+      Última actualización: {adjustedTime}
+    </Typography>
+  );
+};
 
 export function Dashboard() {
   const plantSelectedId = usePlantStore((state) => state.plantSelected?.id);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const refreshTimestamp = useRefreshStore((state) => state.refreshTimestamp);
+  const [refreshKeys, setRefreshKeys] = useState<Record<string, number>>({});
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   useFindDevices();
   useRenderSensorMatterTag();
   useUpdateSensorMatterTag();
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setRefreshKey(prev => prev + 1);
-    }, REFRESH_INTERVAL);
-
-    return () => clearInterval(intervalId);
+  const updateRefreshKeys = useCallback(() => {
+    setRefreshKeys((prev) => {
+      const newKeys = { ...prev };
+      Object.keys(newKeys).forEach((key) => {
+        newKeys[key] = (newKeys[key] || 0) + 1;
+      });
+      return newKeys;
+    });
+    setForceUpdate((prev) => prev + 1);
   }, []);
 
-  const { data: iframes } = useQuery({
-    queryKey: ["iframe-grafanas", plantSelectedId],
+  useEffect(() => {
+    const intervalId = setInterval(updateRefreshKeys, REFRESH_INTERVAL);
+    return () => clearInterval(intervalId);
+  }, [updateRefreshKeys]);
+
+  const { data: iframes, refetch } = useQuery({
+    queryKey: ["iframe-grafanas", plantSelectedId, forceUpdate],
     queryFn: () =>
       service.find({
         ...(plantSelectedId && { idPlant: plantSelectedId }),
@@ -41,31 +92,57 @@ export function Dashboard() {
     enabled: !!plantSelectedId,
     refetchInterval: REFRESH_INTERVAL,
     refetchIntervalInBackground: true,
+    staleTime: REFRESH_INTERVAL / 2,
   });
 
-  const getUniqueUrl = (url: string) => {
-    const timestamp = refreshKey; 
-    const separator = url.includes('?') ? '&' : '?';
-    return `${url}${separator}ts=${timestamp}`;
-  };
+  useEffect(() => {
+    if (forceUpdate > 0) {
+      refetch();
+    }
+  }, [forceUpdate, refetch]);
 
-  const renderIframe = (iframe: IframeGrafana) => (
-    <iframe
-      key={`${iframe.id}-${refreshKey}`}
-      src={getUniqueUrl(iframe.url)}
-      width="100%"
-      height="100%"
-      style={{ border: 'none' }}
-    />
+  const getUniqueUrl = useCallback(
+    (url: string, iframeId: string) => {
+      const autoRefreshTimestamp = refreshKeys[iframeId] || 0;
+      const manualRefreshTimestamp = refreshTimestamp;
+      const timestamp = Date.now();
+      const separator = url.includes("?") ? "&" : "?";
+      return `${url}${separator}ts=${timestamp}&auto=${autoRefreshTimestamp}&manual=${manualRefreshTimestamp}`;
+    },
+    [refreshKeys, refreshTimestamp]
+  );
+
+  const renderIframe = useCallback(
+    (iframe: IframeGrafana) => (
+      <Stack position="relative" width="100%" height="100%">
+        <iframe
+          key={`${iframe.id}-${
+            refreshKeys[iframe.id] || 0
+          }-${refreshTimestamp}-${forceUpdate}`}
+          src={getUniqueUrl(iframe.url, iframe.id)}
+          width="100%"
+          height="100%"
+          style={{ border: "none" }}
+          title={`grafana-${iframe.id}`}
+        />
+      </Stack>
+    ),
+    [refreshKeys, refreshTimestamp, forceUpdate, getUniqueUrl]
   );
 
   return (
     <Stack gap={2} height={"calc(100vh - 88px - 16px)"}>
+        <LastUpdateDisplay />
       <Stack direction={"row"} gap={2} flex={2.5}>
         <Stack gap={2} flex={1}>
           {iframes &&
             iframes.slice(0, 3).map((iframe) => (
-              <Stack key={`container-${iframe.id}-${refreshKey}`} height={"100%"}>
+              <Stack
+                key={`container-${iframe.id}-${
+                  refreshKeys[iframe.id] || 0
+                }-${forceUpdate}`}
+                height={"100%"}
+              >
                 {renderIframe(iframe)}
               </Stack>
             ))}
@@ -77,11 +154,17 @@ export function Dashboard() {
       <Stack direction={"row"} justifyContent={"flex-end"} gap={2} flex={1}>
         <DynamicChart />
         {iframes &&
-          iframes.slice(3).map((iframe) => (
-            <Stack key={`container-${iframe.id}-${refreshKey}`}>
-              {renderIframe(iframe)}
-            </Stack>
-          ))}
+          iframes
+            .slice(3)
+            .map((iframe) => (
+              <Stack
+                key={`container-${iframe.id}-${
+                  refreshKeys[iframe.id] || 0
+                }-${forceUpdate}`}
+              >
+                {renderIframe(iframe)}
+              </Stack>
+            ))}
       </Stack>
     </Stack>
   );
