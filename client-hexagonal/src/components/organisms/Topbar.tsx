@@ -48,7 +48,7 @@ export default function Topbar({ open }: TopbarProps) {
   return (
     <AppBar position="sticky" open={open}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography sx={{color: 'background.paper', fontWeight: 800}}>Progeogas - Sede Caracoli</Typography>
+        <Typography sx={{color: 'background.paper', fontWeight: 800}}>Progeogas - Estación compresora caracoli</Typography>
         <Stack direction="row" alignItems="center" gap={2}>
           <Tooltip title="Actualizar todas las gráficas">
             <IconButton 
