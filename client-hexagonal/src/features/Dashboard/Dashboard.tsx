@@ -24,11 +24,6 @@ const LastUpdateDisplay = () => {
   const lastUpdate = useLastUpdateStore((state) => state.lastUpdate);
   if (!lastUpdate) return null;
 
-  const date = new Date(lastUpdate);
-
-  date.setHours(date.getHours());
-  const adjustedTime = date.toLocaleString();
-
   return (
     <Typography
       variant="caption"
@@ -39,7 +34,7 @@ const LastUpdateDisplay = () => {
         mb: "5px",
       }}
     >
-      Última actualización: {adjustedTime}
+      Última actualización: {lastUpdate}
     </Typography>
   );
 };

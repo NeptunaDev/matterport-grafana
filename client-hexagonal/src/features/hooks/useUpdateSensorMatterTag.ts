@@ -35,7 +35,9 @@ export const useUpdateSensorMatterTag = () => {
  const updateMatterportTag = useCallback(
   (dataSensor: DataSensor) => {
     const date = new Date(dataSensor.createdAt);
-    setLastUpdate(date.toLocaleString());
+    if (date && date.toLocaleString() !== "Invalid Date") {
+      setLastUpdate(date.toLocaleString());
+    }
     
     const tag = sensors[dataSensor.idSensor];
     if (!tag?.matterportId || !sdk) return;
