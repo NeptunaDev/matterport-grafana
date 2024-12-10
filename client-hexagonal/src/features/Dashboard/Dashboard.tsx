@@ -22,14 +22,9 @@ const REFRESH_INTERVAL = 120000;
 
 const LastUpdateDisplay = () => {
   const lastUpdate = useLastUpdateStore((state) => state.lastUpdate);
-
   if (!lastUpdate) return null;
 
   const date = new Date(lastUpdate);
-
-  if (isNaN(date.getTime())) {
-    return null;
-  }
 
   date.setHours(date.getHours());
   const adjustedTime = date.toLocaleString();
@@ -41,6 +36,7 @@ const LastUpdateDisplay = () => {
         padding: "4px 8px",
         borderRadius: 1,
         zIndex: 1000,
+        mb: "5px",
       }}
     >
       Última actualización: {adjustedTime}
@@ -83,7 +79,6 @@ export function Dashboard() {
     enabled: !!plantSelectedId,
     refetchInterval: REFRESH_INTERVAL,
     refetchIntervalInBackground: true,
-    staleTime: REFRESH_INTERVAL / 2,
   });
 
   useEffect(() => {
@@ -123,7 +118,7 @@ export function Dashboard() {
 
   return (
     <Stack gap={2} height={"calc(100vh - 88px - 16px)"}>
-        <LastUpdateDisplay />
+      <LastUpdateDisplay />
       <Stack direction={"row"} gap={2} flex={2.5}>
         <Stack gap={2} flex={1}>
           {iframes &&
